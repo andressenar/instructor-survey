@@ -34,24 +34,22 @@ class SurveyController extends Controller
     // Almacena las respuestas de un aprendiz
     public function storeAnswers(Request $request, $surveyId)
     {
-        // Validación de los datos del formulario
+        // Validación de las respuestas
         $data = $request->validate([
-            'answers' => 'required|array',
-            'answers.*.*' => 'required|in:1,2,3,4,5', // Validar que las respuestas sean entre 1 y 5
+            'answers' => 'required|array', // Aseguramos que sea un array
+            'answers.*' => 'required|string', // Aseguramos que cada respuesta sea una cadena (tanto texto como radio)
         ]);
-    
-        // Guardar las respuestas
-        foreach ($data['answers'] as $questionId => $instructors) {
-            foreach ($instructors as $instructorId => $qualification) {
-                Answer::create([
-                    'qualification' => $qualification,
-                    'apprentice_id' => Auth::user()->id, // Asumiendo que el aprendiz está autenticado
-                    'instructor_id' => $instructorId,
-                    'question_id' => $questionId,
-                ]);
-            }
+
+        // Procesamos cada respuesta
+        foreach ($data['answers'] as $questionId => $answer) {
+            // Guardamos las respuestas en la base de datos
+            Answer::create([
+                'qualification' => $answer,  // Guardamos el valor de la respuesta (texto o opción de radio)
+                'apprentice_id' => Auth::user()->id, // Asumimos que el aprendiz está autenticado
+                'question_id' => $questionId, // ID de la pregunta
+            ]);
         }
-    
+
         // Redirigir con mensaje de éxito
         return redirect()->route('survey.complete')->with('success', 'Tus respuestas han sido guardadas correctamente');
     }
