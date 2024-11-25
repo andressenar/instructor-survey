@@ -31,7 +31,7 @@ class AuthController extends Controller
         // Si el aprendiz existe, autenticarlo
         if ($apprentice) {
             Auth::login($apprentice);  // Usamos el sistema de autenticación de Laravel
-            return redirect()->route('survey.show', ['apprenticeId' => $apprentice->id, 'surveyId' => 1]);   // Redirigir a la encuesta
+            return redirect()->route('survey.show', ['apprenticeId' => $apprentice->id, 'surveyId' => 1]); // Redirigir a la encuesta
         }
 
         // Si no se encuentra el aprendiz, devolver error

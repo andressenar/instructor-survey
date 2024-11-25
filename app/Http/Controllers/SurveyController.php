@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Answer;
@@ -19,8 +18,11 @@ class SurveyController extends Controller
         $apprentice = Apprentice::findOrFail($apprenticeId);
         $survey = Survey::findOrFail($surveyId);
 
-        // Obtener los instructores asociados al aprendiz
-        $instructors = $apprentice->courses()->with('instructors')->get()->pluck('instructors')->flatten();
+        // Obtener el curso asociado al aprendiz
+        $course = $apprentice->course; // Ahora obtenemos el curso relacionado con el aprendiz
+
+        // Obtener los instructores asociados al curso
+        $instructors = $course->instructors; // Acceder a los instructores del curso
 
         // Obtener las preguntas de la encuesta
         $questions = $survey->questions;

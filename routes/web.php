@@ -17,11 +17,10 @@ Route::post('import', [ImportController::class, 'import'])->name('import');
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
-
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rutas para la encuesta (ya existentes)
 Route::middleware('auth')->get('/survey/{apprenticeId}/{surveyId}', [SurveyController::class, 'showSurvey'])->name('survey.show');
 
-
+Route::get('/survey/{apprenticeId}/{surveyId}', [SurveyController::class, 'showSurvey'])->name('survey.show');
 Route::post('/survey/{survey_id}/submit', [SurveyController::class, 'storeAnswers'])->name('survey.submit');
