@@ -6,18 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Instructor extends Model
 {
-    public function user ()
-    {
-        return $this->belongsTo(User::class, 'id');
-    }
+    protected $fillable = [
+        'first_name',
+        'middle_name',    
+        'last_name',
+        'second_last_name',
+        'identity_document',
+    ];
+    
+    // public function user ()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
 
     public function answers ()
     {
-        return $this->hasMany(Answer::class, 'id');
+        return $this->hasMany(Answer::class);
     }
 
     public function courses ()
     {
-        return $this->belongsToMany(Course::class, 'id');
+        return $this->belongsToMany(Course::class);
     }
 }
