@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('type')->default('default_value');
             $table->string('qualification');
 
-            $table->unsignedBigInteger('apprentice_id');
-            $table->foreign('apprentice_id')->references('id')->on('apprentices');
+            $table->unsignedBigInteger('apprentice_id')->nullable(); // Esto permite que apprentice_id sea null
+            $table->foreign('apprentice_id')->references('id')->on('apprentices')->onDelete('set null');
 
             $table->unsignedBigInteger('instructor_id');
             $table->foreign('instructor_id')->references('id')->on('instructors');

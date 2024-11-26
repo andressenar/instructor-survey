@@ -45,7 +45,7 @@ class SurveyController extends Controller
 
             Answer::create([
                 'qualification' => $answer,
-                'apprentice_id' => Auth::id(),
+                'apprentice_id' =>null,
                 'question_id' => $questionId,
                 'instructor_id' => $request->instructor_id, // Asegúrate de que este dato venga del formulario
             ]);
@@ -62,10 +62,10 @@ class SurveyController extends Controller
         foreach ($request->answers as $instructorId => $questions) {
             foreach ($questions as $questionId => $answer) {
                 Answer::create([
-                    'apprentice_id' => $apprenticeId,
+                    'apprentice_id' => null,
                     'instructor_id' => $instructorId,
                     'question_id' => $questionId,
-                    'qualification' => is_array($answer) ? json_encode($answer) : $answer, // Manejo de texto o radio
+                    'qualification' => is_array($answer) ? json_encode($answer) : $answer,
                 ]);
             }
         }
@@ -76,6 +76,6 @@ class SurveyController extends Controller
 
     public function complete()
     {
-        return view('survey.complete'); // Asegúrate de crear esta vista
+        return view('survey.complete');
     }
 }
