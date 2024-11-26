@@ -8,12 +8,12 @@ class Instructor extends Model
 {
     protected $fillable = [
         'first_name',
-        'middle_name',    
+        'middle_name',
         'last_name',
         'second_last_name',
         'identity_document',
     ];
-    
+
     // public function user ()
     // {
     //     return $this->belongsTo(User::class);
@@ -28,4 +28,5 @@ class Instructor extends Model
     {
         return $this->belongsToMany(Course::class);
     }
+    
 }

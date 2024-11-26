@@ -8,10 +8,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Apprentice extends Authenticatable
 {
     protected $fillable = [
-        // 'first_name',
-        // 'middle_name',
-        // 'last_name',
-        // 'second_last_name',
+        'first_name',
+        'middle_name',
+        'last_name',
+        'second_last_name',
         'identity_document',
         'course_id'
     ];
