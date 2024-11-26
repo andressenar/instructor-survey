@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Apprentice;
+use App\Models\Course; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,21 +20,26 @@ class AuthController extends Controller
     {
         // Validar los datos de entrada
         $request->validate([
-            'course_id' => 'required|exists:apprentices,course_id',  // Verificar que el course_id exista
-            'identity_document' => 'required|exists:apprentices,identity_document',  // Verificar que la cédula exista
+            'course_code' => 'required|exists:courses,code', 
+            'identity_document' => 'required|exists:apprentices,identity_document', 
         ]);
 
-        // Intentar obtener al aprendiz según course_id e identity_document
-        $apprentice = Apprentice::where('course_id', $request->course_id)
-            ->where('identity_document', $request->identity_document)
-            ->first();
+        // Obtener el curso correspondiente al código proporcionado
+        $course = Course::where('code', $request->course_code)->first();
 
-        if ($apprentice) {
-            Auth::login($apprentice);
-            return redirect()->route('survey.show', ['apprenticeId' => $apprentice->id, 'surveyId' => 1]);
+        if ($course) {
+            // Intentar obtener al aprendiz con la cédula indicada y que esté asociado al curso encontrado
+            $apprentice = Apprentice::where('course_id', $course->id)
+                ->where('identity_document', $request->identity_document)
+                ->first();
+
+            if ($apprentice) {
+                Auth::login($apprentice);
+                return redirect()->route('survey.show', ['apprenticeId' => $apprentice->id, 'surveyId' => 1]);
+            }
         }
 
-        // Si el aprendiz no existe, redirigir con error
+        // Si no se encontró el aprendiz o el curso, redirigir con error
         return back()->withErrors(['error' => 'Curso o número de identificación incorrectos.']);
     }
 

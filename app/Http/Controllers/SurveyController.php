@@ -15,7 +15,7 @@ class SurveyController extends Controller
     public function showSurvey($apprenticeId, $surveyId)
     {
         $survey = Survey::with('questions')->find($surveyId);
-    $user = auth()->user();
+    $user = Auth::user();
 
     // Verificar que el aprendiz pertenece a un curso válido
     if (!$user->course) {
@@ -57,7 +57,7 @@ class SurveyController extends Controller
 
     public function submitSurvey(Request $request, $surveyId)
     {
-        $apprenticeId = auth()->user()->id; // Obtener el aprendiz autenticado
+        $apprenticeId = Auth::user()->id; // Obtener el aprendiz autenticado
 
         foreach ($request->answers as $instructorId => $questions) {
             foreach ($questions as $questionId => $answer) {
