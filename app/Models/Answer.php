@@ -6,7 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Answer extends Model
 {
-    protected $fillable = ['type', 'qualification', 'apprentice_id', 'instructor_id', 'question_id'];
+    protected $fillable = [
+        'type',
+        'qualification',
+        'apprentice_id',
+        'instructor_id',
+        'question_id'
+    ];
 
     public function apprentice ()
     {

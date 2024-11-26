@@ -15,12 +15,15 @@ Route::get('/', function () {
 
 Route::post('import', [ImportController::class, 'import'])->name('import');
 
+// Rutas de autenticación
+
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Rutas para la encuesta (ya existentes)
-Route::middleware('auth')->get('/survey/{apprenticeId}/{surveyId}', [SurveyController::class, 'showSurvey'])->name('survey.show');
-
-Route::get('/survey/{apprenticeId}/{surveyId}', [SurveyController::class, 'showSurvey'])->name('survey.show');
-Route::post('/survey/{survey_id}/submit', [SurveyController::class, 'storeAnswers'])->name('survey.submit');
+// Rutas protegidas
+Route::middleware('auth')->group(function () {
+    Route::get('/survey/{apprenticeId}/{surveyId}', [SurveyController::class, 'showSurvey'])->name('survey.show');
+    Route::post('survey/{id}/submit', [SurveyController::class, 'submitSurvey'])->name('survey.submit');
+    Route::get('/survey/complete', [SurveyController::class, 'complete'])->name('survey.complete');
+});

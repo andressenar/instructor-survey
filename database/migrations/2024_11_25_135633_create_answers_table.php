@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
 
-            $table->string('type');
+            $table->string('type')->default('default_value');
             $table->string('qualification');
 
             $table->unsignedBigInteger('apprentice_id');

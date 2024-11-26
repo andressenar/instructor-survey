@@ -20,7 +20,7 @@ class AuthController extends Controller
         // Validar los datos de entrada
         $request->validate([
             'course_id' => 'required|exists:apprentices,course_id',  // Verificar que el course_id exista
-            'identity_document' => 'required|exists:apprentices,identity_document',  // Verificar que el número de identificación exista
+            'identity_document' => 'required|exists:apprentices,identity_document',  // Verificar que la cédula exista
         ]);
 
         // Intentar obtener al aprendiz según course_id e identity_document
@@ -28,14 +28,13 @@ class AuthController extends Controller
             ->where('identity_document', $request->identity_document)
             ->first();
 
-        // Si el aprendiz existe, autenticarlo
         if ($apprentice) {
-            Auth::login($apprentice);  // Usamos el sistema de autenticación de Laravel
-            return redirect()->route('survey.show', ['apprenticeId' => $apprentice->id, 'surveyId' => 1]); // Redirigir a la encuesta
+            Auth::login($apprentice);
+            return redirect()->route('survey.show', ['apprenticeId' => $apprentice->id, 'surveyId' => 1]);
         }
 
-        // Si no se encuentra el aprendiz, devolver error
-        return back()->withErrors(['error' => 'Curso o número de identificación incorrectos']);
+        // Si el aprendiz no existe, redirigir con error
+        return back()->withErrors(['error' => 'Curso o número de identificación incorrectos.']);
     }
 
     // Cerrar sesión

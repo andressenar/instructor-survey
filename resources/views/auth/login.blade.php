@@ -1,37 +1,26 @@
-<!-- resources/views/auth/login.blade.php -->
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio de Sesión</title>
+    <title>Login</title>
 </head>
 <body>
-
-    <h1>Iniciar sesión</h1>
-
-    @if ($errors->any())
-        <div style="color: red;">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
+    <h1>Iniciar Sesión</h1>
     <form action="{{ route('login.submit') }}" method="POST">
         @csrf
-        <label for="course_id">Número de Curso (ID del curso):</label>
-        <input type="text" id="course_id" name="course_id" required>
-        <br><br>
-        
-        <label for="identity_document">Número de Identificación:</label>
-        <input type="text" id="identity_document" name="identity_document" required>
-        <br><br>
-        
-        <button type="submit">Iniciar sesión</button>
+        <label for="course_id">Número de Ficha:</label>
+        <input type="text" name="course_id" id="course_id" required>
+        <br>
+        <label for="identity_document">Cédula:</label>
+        <input type="text" name="identity_document" id="identity_document" required>
+        <br>
+        <button type="submit">Ingresar</button>
     </form>
-
+    @if ($errors->any())
+        <div>
+            <p>{{ $errors->first() }}</p>
+        </div>
+    @endif
 </body>
 </html>
