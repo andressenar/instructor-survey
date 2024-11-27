@@ -15,10 +15,10 @@
                 },
                 series: [{
                     name: 'Calificación Promedio',
-                    data: @json($reportData->values()) // Datos de calificaciones
+                    data: @json($reportData->values())
                 }],
                 xaxis: {
-                    categories: @json($questions) // Preguntas
+                    categories: @json($questions) 
                 }
             };
 
@@ -29,8 +29,8 @@
 </head>
 <body>
     <div class="container">
-        <h2>Reporte de {{ $instructor->name }} - {{ $course->name }}</h2>
-        <div id="chart"></div>
+
+    
     </div>
 
 

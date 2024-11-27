@@ -5,32 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\Answer;
 use App\Models\Course;
 use App\Models\Instructor;
+use App\Models\Question;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    // Muestra la vista de selección de cursos y maestros
-    public function index()
+    public function courses()
     {
         $courses = Course::with('instructors')->get();
-        return view('reports.index', compact('courses'));
+        return view('reports.courses', compact('courses'));
     }
-
-    // Muestra el reporte de respuestas por maestro
+    public function index()
+    {
+        $questions = Question::included()->get();
+        return view('reports.index', compact('questions'));
+    }
     public function show($courseId, $instructorId)
     {
-
-        // Filtrar respuestas por curso e instructor con relación muchos a muchos
         $answers = Answer::whereHas('instructor.courses', function ($query) use ($courseId) {
-            $query->where('courses.id', $courseId); // Especificamos el prefijo 'courses.id' para evitar ambigüedad
+            $query->where('courses.id', $courseId);
         })->where('instructor_id', $instructorId)->get();
-
-        // Agrupar calificaciones por pregunta
         $reportData = $answers->groupBy('question_id')->map(function ($answers) {
-            return $answers->avg('qualification'); // Calificación promedio
+            // return $answers->avg('qualification'); // Calificación promedio
         });
-
-        // Obtener etiquetas de preguntas
         $questions = $answers->map->question->unique('id')->pluck('text');
 
         return view('reports.show', [
