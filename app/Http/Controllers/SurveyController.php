@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Answer;
 use App\Models\Apprentice;
 use App\Models\Instructor;
+use App\Models\Question;
 use App\Models\Survey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,12 +40,35 @@ class SurveyController extends Controller
 
         // Procesamos cada respuesta
         foreach ($data['answers'] as $questionId => $answer) {
+            $question = Question::find($questionId);
             if (!Auth::check()) {
                 return redirect()->route('login.form')->withErrors(['error' => 'Debes iniciar sesión para completar la encuesta.']);
             }
+            switch ($question->type) {
+                case 'calificacion':
+                    if (!is_numeric($answer) || $answer < 1 || $answer > 5) {
+                        return redirect()->back()->withErrors(['error' => "La respuesta a la pregunta {$question->text} debe estar entre 1 y 5."]);
+                    }
+                    break;
+
+                case 'booleano':
+                    if (!in_array($answer, ['yes', 'no'])) {
+                        return redirect()->back()->withErrors(['error' => "La respuesta a la pregunta {$question->text} debe ser 'yes' o 'no'."]);
+                    }
+                    break;
+
+                case 'texto':
+                    if (strlen($answer) > 500) {
+                        return redirect()->back()->withErrors(['error' => "La respuesta a la pregunta {$question->text} no debe exceder 500 caracteres."]);
+                    }
+                    break;
+
+                default:
+                    continue;
+            }
 
             Answer::create([
-                'qualification' => $answer,
+                'qualification' => is_string($answer) ? $answer : (string) $answer,
                 'apprentice_id' => Auth::id(),
                 'question_id' => $questionId,
                 'instructor_id' => $request->instructor_id, // Asegúrate de que este dato venga del formulario
