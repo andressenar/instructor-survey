@@ -28,4 +28,5 @@ class Instructor extends Model
     {
         return $this->belongsToMany(Course::class,'course_instructor', 'instructor_id', 'course_id');
     }
+    
 }

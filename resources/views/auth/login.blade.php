@@ -7,15 +7,21 @@
 </head>
 <body>
     <h1>Iniciar Sesión</h1>
-    <form action="{{ route('login.submit') }}" method="POST">
+    <form method="POST" action="{{ route('login.submit') }}">
         @csrf
-        <label for="course_id">Número de Ficha:</label>
-        <input type="text" name="course_id" id="course_id" required>
-        <br>
-        <label for="identity_document">Cédula:</label>
-        <input type="text" name="identity_document" id="identity_document" required>
-        <br>
-        <button type="submit">Ingresar</button>
+        <div>
+            <label for="course_code">Código de curso:</label>
+            <input type="text" id="course_code" name="course_code" required>
+        </div>
+        
+        <div>
+            <label for="identity_document">Cédula:</label>
+            <input type="text" id="identity_document" name="identity_document" required>
+        </div>
+    
+        <div>
+            <button type="submit">Ingresar</button>
+        </div>
     </form>
     @if ($errors->any())
         <div>
