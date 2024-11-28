@@ -12,7 +12,7 @@
 <body>
 
     <div class="container">
-        <h2>Reporte del Curso: {{ $course->code }}</h2>
+        <h2>Reporte de la Ficha: {{ $course->code }}</h2>
         <h3>Instructor: {{ $instructor->name }}</h3>
         <h3>programa:{{ $program->name }}</h3>
 
