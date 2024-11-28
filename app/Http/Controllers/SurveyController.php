@@ -8,58 +8,88 @@ use App\Models\Question;
 use App\Models\Survey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class SurveyController extends Controller
 {
+    // Muestra la encuesta para un aprendiz
     public function showSurvey($apprenticeId, $surveyId)
     {
         $survey = Survey::with('questions')->find($surveyId);
-        $user = Auth::user();
+    $user = auth()->user();
 
+    // Verificar que el aprendiz pertenece a un curso válido
     if (!$user->course) {
         abort(403, 'No estás inscrito en un curso válido.');
     }
 
+    // Obtener instructores asociados al curso del aprendiz
     $instructors = $user->course->instructors;
 
     return view('survey.form', compact('survey', 'instructors'));
     }
 
+    // Almacena las respuestas de un aprendiz
     public function storeAnswers(Request $request, $surveyId)
     {
+        // Validación de las respuestas
         $data = $request->validate([
-            'answers' => 'required|array',
-            'answers.*' => 'required|string',
+            'answers' => 'required|array', // Aseguramos que sea un array
+            'answers.*' => 'required|string', // Aseguramos que cada respuesta sea una cadena (tanto texto como radio)
         ]);
 
+        // Procesamos cada respuesta
         foreach ($data['answers'] as $questionId => $answer) {
             $question = Question::find($questionId);
             if (!Auth::check()) {
                 return redirect()->route('login.form')->withErrors(['error' => 'Debes iniciar sesión para completar la encuesta.']);
             }
-           
+            switch ($question->type) {
+                case 'calificacion':
+                    if (!is_numeric($answer) || $answer < 1 || $answer > 5) {
+                        return redirect()->back()->withErrors(['error' => "La respuesta a la pregunta {$question->text} debe estar entre 1 y 5."]);
+                    }
+                    break;
+
+                case 'booleano':
+                    if (!in_array($answer, ['yes', 'no'])) {
+                        return redirect()->back()->withErrors(['error' => "La respuesta a la pregunta {$question->text} debe ser 'yes' o 'no'."]);
+                    }
+                    break;
+
+                case 'texto':
+                    if (strlen($answer) > 500) {
+                        return redirect()->back()->withErrors(['error' => "La respuesta a la pregunta {$question->text} no debe exceder 500 caracteres."]);
+                    }
+                    break;
+
+                default:
+                    continue;
+            }
 
             Answer::create([
-                'qualification' => $answer,
-                'apprentice_id' => null,
+                'qualification' => is_string($answer) ? $answer : (string) $answer,
+                'apprentice_id' => Auth::id(),
                 'question_id' => $questionId,
-                'instructor_id' => $request->instructor_id,
+                'instructor_id' => $request->instructor_id, // Asegúrate de que este dato venga del formulario
             ]);
         }
 
+        // Redirigir con mensaje de éxito
         return redirect()->route('survey.complete')->with('success', 'Tus respuestas han sido guardadas correctamente');
     }
 
     public function submitSurvey(Request $request, $surveyId)
     {
+        $apprenticeId = auth()->user()->id; // Obtener el aprendiz autenticado
 
         foreach ($request->answers as $instructorId => $questions) {
             foreach ($questions as $questionId => $answer) {
                 Answer::create([
-                    'apprentice_id' => null,
+                    'apprentice_id' => $apprenticeId,
                     'instructor_id' => $instructorId,
                     'question_id' => $questionId,
-                    'qualification' => is_array($answer) ? json_encode($answer) : $answer,
+                    'qualification' => is_array($answer) ? json_encode($answer) : $answer, // Manejo de texto o radio
                 ]);
             }
         }
@@ -67,9 +97,9 @@ class SurveyController extends Controller
         return redirect()->route('survey.complete');
     }
 
+
     public function complete()
     {
-        return view('survey.complete');
+        return view('survey.complete'); // Asegúrate de crear esta vista
     }
-
 }

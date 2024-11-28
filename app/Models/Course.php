@@ -13,23 +13,23 @@ class Course extends Model
         'program_id',
         'municipality_id'
     ];
-    protected $allowIncluded = ['instructors']; 
+    protected $allowIncluded = ['instructors', 'instructor.answers', 'question.answers','program'];
 
     public function scopeIncluded(Builder $query)
     {
 
-        if(empty($this->allowIncluded)||empty(request('included'))){
-             return;
+        if (empty($this->allowIncluded) || empty(request('included'))) {
+            return;
         }
 
 
-        $relations = explode(',', request('included')); 
+        $relations = explode(',', request('included'));
 
-        
 
-        $allowIncluded = collect($this->allowIncluded); 
 
-        foreach ($relations as $key => $relationship) { 
+        $allowIncluded = collect($this->allowIncluded);
+
+        foreach ($relations as $key => $relationship) {
 
             if (!$allowIncluded->contains($relationship)) {
                 unset($relations[$key]);
@@ -37,19 +37,22 @@ class Course extends Model
         }
         $query->with($relations);
     }
+    public function program() {
 
-    public function apprentices ()
+        return $this->belongsTo(Program::class,'id');
+    }
+    public function apprentices()
     {
         return $this->hasMany(Apprentice::class);
     }
 
-    public function municipality ()
+    public function municipality()
     {
         return $this->belongsTo(Municipality::class);
     }
 
-    public function instructors ()
+    public function instructors()
     {
-        return $this->belongsToMany(Instructor::class,'course_instructor', 'course_id', 'instructor_id');
+        return $this->belongsToMany(Instructor::class, 'course_instructor', 'course_id', 'instructor_id');
     }
 }

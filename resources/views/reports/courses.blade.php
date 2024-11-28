@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,7 +17,7 @@
                 <th>Instructores</th>
             </tr>
         </thead>
-        <tbody> 
+        <tbody>
             @foreach ($courses as $course)
                 <tr>
                     <td>{{ $course->code }}</td>

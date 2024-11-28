@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::post('survey/{id}/submit', [SurveyController::class, 'submitSurvey'])->name('survey.submit');
     Route::get('/survey/complete', [SurveyController::class, 'complete'])->name('survey.complete');
 });
+
+//reportes
 Route::get('/report', [ReportController::class, 'index'])->name('reports.index');
-Route::get('/reports/{courseId}/{instructorId}', [ReportController::class, 'show'])->name('reports.show');
+Route::get('/reports/{courseId}/{instructorId}/{programId}', [ReportController::class, 'show'])->name('reports.show');
 Route::get('/courses', [ReportController::class, 'courses'])->name('courses.index');
