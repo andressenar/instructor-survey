@@ -89,7 +89,7 @@ class SurveySeeder extends Seeder
         ]);
 
 
-        //PLANEACION DEL PROCEDIMIENTO DE EJECUCION DE LA FORMACION
+        // EJECUCION DE LA FORMACION PROFESIONAL
         Question::create([
             'survey_id' => $survey->id,
             'question' => 'Propone ejemplos o ejercicios que vinculan los resultados de aprendizaje con la práctica real',
@@ -133,7 +133,7 @@ class SurveySeeder extends Seeder
         ]);
 
 
-        //PLANEACION DEL PROCEDIMIENTO DE EJECUCION DE LA FORMACION
+        // EVALUACION
         Question::create([
             'survey_id' => $survey->id,
             'question' => 'Identifica los conocimientos y habilidades de los aprendices al inicio de cada competencia',

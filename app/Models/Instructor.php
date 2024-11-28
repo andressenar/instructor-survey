@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Instructor extends Model
 {
     protected $fillable = [
-        'first_name',
-        'middle_name',
+        'name',
+        // 'middle_name',
         'last_name',
         'second_last_name',
         'identity_document',
@@ -28,5 +28,5 @@ class Instructor extends Model
     {
         return $this->belongsToMany(Course::class,'course_instructor', 'instructor_id', 'course_id');
     }
-    
+
 }

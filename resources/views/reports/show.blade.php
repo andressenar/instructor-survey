@@ -16,18 +16,22 @@
         <h3>Instructor: {{ $instructor->first_name }}</h3>
         <h3>programa:{{ $program->name }}</h3>
 
-        <div class="chart-section" id="chart1">
-            <h2>1.Integralidad del instructor</h2>
+        <div class="container-grafic">
+            <div class="chart-section" id="chart1">
+                <h2>1.Integralidad del instructor</h2>
+            </div>
+            <div class="chart-section" id="chart2">
+                <h2>2.Planeacion del procedimiento de ejecucion de la formación</h2>
+            </div>
+            <div class="chart-section" id="chart3">
+                <h2>3.Ejecucion de la formacion personal</h2>
+            </div>
+            <div class="chart-section" id="chart4">
+                <h2>4.Evaluacion</h2>
+            </div>
+
         </div>
-        <div class="chart-section" id="chart2">
-            <h2>2.Planeacion del procedimiento de ejecucion de la formación</h2>
-        </div>
-        <div class="chart-section" id="chart3">
-            <h2>3.Ejecucion de la formacion personal</h2>
-        </div>
-        <div class="chart-section" id="chart4">
-            <h2>4.Evaluacion</h2>
-        </div>
+      
         </div>
 
 
@@ -47,7 +51,7 @@
                 const chunkData = reportData.slice(startIndex, startIndex + count);
                 const chunkCategories = questions.slice(startIndex, startIndex + count).map(q => {
             // Limita el texto a 20 caracteres y agrega "..." si es más largo
-            return q.length > 20 ? q.substring(0, 20) + '...' : q;
+            return q.length > 20 ? q.substring(0, 25) + '...' : q;
         });
                 startIndex += count;
 
@@ -74,8 +78,9 @@
                     rotate: 0,
                     style: {
                         fontSize: '12px',
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
                     }
+                   
                 }
             },
             yaxis: {
