@@ -13,7 +13,7 @@
 
     <div class="container">
         <h2>Reporte del Curso: {{ $course->code }}</h2>
-        <h3>Instructor: {{ $instructor->first_name }}</h3>
+        <h3>Instructor: {{ $instructor->name }}</h3>
         <h3>programa:{{ $program->name }}</h3>
 
         <div class="container-grafic">
@@ -31,7 +31,7 @@
             </div>
 
         </div>
-      
+
         </div>
 
 
@@ -80,7 +80,7 @@
                         fontSize: '12px',
                         fontWeight: 'bold',
                     }
-                   
+
                 }
             },
             yaxis: {
