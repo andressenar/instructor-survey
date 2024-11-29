@@ -20,45 +20,94 @@
                 </ul>
             </div>
         </details>
-
-
         @if ($survey->questions->isEmpty())
-            <p>No hay preguntas disponibles para esta encuesta.</p>
+            <p><strong>No hay preguntas disponibles para esta encuesta.</strong></p>
         @else
             @foreach ($survey->questions as $question)
-                <div>
-                    <h4>{{ $question->question }}</h4>
-                    @if ($instructors->isEmpty())
-                        <p>No hay instructores disponibles para esta encuesta.</p>
-                    @else
-                        @foreach ($instructors as $instructor)
-                            <div class="flex w-full">
-                                <p><strong>Instructor: {{ $instructor->first_name }}
-                                        {{ $instructor->last_name }}</strong></p>
-                                <div class="w-full text-sm text-left border-collapse border border-gray-300 rounded-lg">
-                                  @if ($question->type == 'radio')
-                                  @foreach ($question->options as $option)
-                                  <input type="radio"
-                                    class="h-5 w-5" name="answers[{{ $instructor->id }}][{{ $question->id }}]"
-                                    value="{{ $option }}"
-                                    id="question-{{ $question->id }}-instructor-{{ $instructor->id }}-{{ $option }}">
-                                    <label
-                                        for="question-{{ $question->id }}-instructor-{{ $instructor->id }}-{{ $option }}">{{ $option }}</label>
-                        @endforeach
-                    @elseif($question->type == 'text')
-                        <textarea name="answers[{{ $instructor->id }}][{{ $question->id }}]"
-                            id="question-{{ $question->id }}-instructor-{{ $instructor->id }}"></textarea>
-                    @endif
-                </div>
-    </div>
-    @endforeach
-    @endif
-    </div>
-    @endforeach
-    @endif
-    <!-- Botón de navegación -->
-    <div class="flex justify-end mt-6">
-        <button type="submit" >Enviar Encuesta</button>
-    </div>
+
+            <div class="flex justify-start mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">hhijh</h2>
+            </div>
+
+            <div class="flex justify-start mb-4">
+                <h2 class="text-base font-semibold text-gray-700">{{ $question->question }}</h2>
+            </div>
+
+
+                @switch($question->type)
+                    @case('radio')
+                        <table class="w-full text-sm text-left border-collapse border border-gray-300 rounded-lg">
+                            <thead>
+                                <tr class="bg-gray-200 text-gray-700">
+                                    <th class="border border-gray-300 p-2 text-center">Instructor</th>
+                                    @foreach ($question->options as $option)
+                                        <th class="border border-gray-300 p-2 text-center">{{ $option }}</th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($instructors->isEmpty())
+                                    <tr class="bg-gray-200 text-gray-700">
+                                        <strong>No hay instructores para esta ficha.</strong>
+                                    </tr>
+                                @else
+                                    @foreach ($instructors as $instructor)
+                                        <tr>
+                                            <td class="border border-gray-300 p-2">{{ $instructor->name }} {{ $instructor->last_name }}</td>
+                                            @foreach ($question->options as $option)
+                                                <td class="border border-gray-300 p-2 text-center">
+                                                    <input type="radio"
+                                                        name="answers[{{ $instructor->id }}][{{ $question->id }}]"
+                                                        id="question-{{ $question->id }}-instructor-{{ $instructor->id }}-{{ $option }}"
+                                                        class="h-5 w-5">
+                                                </td>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    @break
+
+                    @case('text')
+                    <table class="w-full text-sm text-left border-collapse border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-200 text-gray-700">
+                                <th class="border border-gray-300 p-2 text-center">Instructores</th>
+                                <th class="border border-gray-300 p-2 text-center">Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if ($instructors->isEmpty())
+                            <tr>
+                                <strong>No hay instructores para realizar la observacion.</strong>
+                            </tr>
+                            @else
+                            @foreach ($instructors as $instructor)
+                            <tr>
+                                <td class="border border-gray-300 p-2">{{ $instructor->name }} {{ $instructor->last_name }}</td>
+                               
+                                <td class="border border-gray-300 p-2 text-center">
+                                <textarea class="w-full h-full"
+                                        name="answers[{{ $instructor->id }}][{{ $question->id }}]" 
+                                        id="question-{{ $question->id }}-instructor-{{ $instructor->id }}">
+                               </textarea>
+                                 </td>
+                               
+                            </tr>
+                                
+                            @endforeach
+                            @endif
+                        </tbody>
+                    </table>
+                    @break
+                    @default
+                @endswitch
+            @endforeach
+        @endif
+        <!-- Botón de navegación -->
+        <div class="flex justify-end mt-6">
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-200">Enviar Encuesta</button>
+        </div>
     </div>
 </form>
