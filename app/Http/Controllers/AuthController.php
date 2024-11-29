@@ -14,29 +14,6 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    // public function login(Request $request)
-    // {
-    //     $request->validate([
-    //         'course_code' => 'required|exists:courses,code',
-    //         'identity_document' => 'required|exists:apprentices,identity_document',
-    //     ]);
-
-    //     $course = Course::where('code', $request->course_code)->first();
-
-    //     if ($course) {
-    //         $apprentice = Apprentice::where('course_id', $course->id)
-    //             ->where('identity_document', $request->identity_document)
-    //             ->first();
-
-    //         if ($apprentice) {
-    //             Auth::login($apprentice);
-    //             return redirect()->route('survey.show', ['apprenticeId' => $apprentice->id, 'surveyId' => 1]);
-    //         }
-    //     }
-
-    //     return back()->withErrors(['error' => 'Curso o número de identificación incorrectos.']);
-    // }
-
     public function login(Request $request)
     {
         $request->validate([
