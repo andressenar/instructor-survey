@@ -11,6 +11,11 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+    public function admin()
+    {
+        return view('admin.admin');
+    }
+
     public function courses()
     {
         $courses = Course::included()->get();
@@ -29,7 +34,7 @@ class ReportController extends Controller
         })->where('instructor_id', $instructorId)->get();
         $reportData = $answers->groupBy('question_id')->map(function ($group) {
             $calificaciones = $group->pluck('qualification')->map(function ($value) {
-                return (int)$value; 
+                return (int)$value;
             });
             return [
                 'average' => $calificaciones->avg(),

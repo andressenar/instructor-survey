@@ -1,25 +1,16 @@
 <?php
 
-// namespace Database\Seeders;
+namespace Database\Seeders;
 
-// use App\Models\User;
-// use Illuminate\Database\Seeder;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
-// class DatabaseSeeder extends Seeder
-// {
-
-<<<<<<< HEAD
-//     public function run(): void
-//     {
+class DatabaseSeeder extends Seeder
+{
 
 
-//         User::factory()->create([
-//             'name' => 'Test User',
-//             'email' => 'test@example.com',
-//         ]);
-//     }
-// }
-=======
+ public function run(): void
+    {
         $this->call([MunicipalitySeeder::class, SurveySeeder::class]);
 
         User::factory()->create([
@@ -28,4 +19,4 @@
         ]);
     }
 }
->>>>>>> 823d9be2625c3e6cc038acca0aa506a82cf72489
+

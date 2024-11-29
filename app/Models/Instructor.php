@@ -8,16 +8,10 @@ class Instructor extends Model
 {
     protected $fillable = [
         'name',
-        // 'middle_name',
         'last_name',
         'second_last_name',
         'identity_document',
     ];
-
-    // public function user ()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
 
     public function answers ()
     {

@@ -15,28 +15,6 @@ class Course extends Model
     ];
     protected $allowIncluded = ['instructors', 'instructor.answers', 'question.answers','program'];
 
-    public function scopeIncluded(Builder $query)
-    {
-
-        if (empty($this->allowIncluded) || empty(request('included'))) {
-            return;
-        }
-
-
-        $relations = explode(',', request('included'));
-
-
-
-        $allowIncluded = collect($this->allowIncluded);
-
-        foreach ($relations as $key => $relationship) {
-
-            if (!$allowIncluded->contains($relationship)) {
-                unset($relations[$key]);
-            }
-        }
-        $query->with($relations);
-    }
     public function program() {
 
         return $this->belongsTo(Program::class,'id');
@@ -54,5 +32,25 @@ class Course extends Model
     public function instructors()
     {
         return $this->belongsToMany(Instructor::class, 'course_instructor', 'course_id', 'instructor_id');
+    }
+
+    public function scopeIncluded(Builder $query)
+    {
+
+        if (empty($this->allowIncluded) || empty(request('included'))) {
+            return;
+        }
+
+        $relations = explode(',', request('included'));
+
+        $allowIncluded = collect($this->allowIncluded);
+
+        foreach ($relations as $key => $relationship) {
+
+            if (!$allowIncluded->contains($relationship)) {
+                unset($relations[$key]);
+            }
+        }
+        $query->with($relations);
     }
 }
