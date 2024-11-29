@@ -25,7 +25,7 @@
         @else
             @foreach ($survey->questions as $question)
 
-            <div class="flex justify-start mb-4">
+            <div class="flex justify-start mb-4 ">
                 <h2 class="text-xl font-semibold text-gray-800">hhijh</h2>
             </div>
 
@@ -36,7 +36,7 @@
 
                 @switch($question->type)
                     @case('radio')
-                        <table class="w-full text-sm text-left border-collapse border border-gray-300 rounded-lg">
+                        <table class="w-full text-sm text-left border-collapse border border-gray-300 rounded-lg ">
                             <thead>
                                 <tr class="bg-gray-200 text-gray-700">
                                     <th class="border border-gray-300 p-2 text-center">Instructor</th>
