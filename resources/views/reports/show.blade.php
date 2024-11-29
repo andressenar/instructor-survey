@@ -8,9 +8,7 @@
     <title>Reporte-instructor</title>
     <link rel="stylesheet" href="{{asset('css/show.css')}}">
 </head>
-
 <body>
-
     <div class="container">
         <h2>Reporte de la Ficha: {{ $course->code }}</h2>
         <h3>Instructor: {{ $instructor->name }}</h3>
@@ -29,13 +27,16 @@
             <div class="chart-section" id="chart4">
                 <h2>4.Evaluacion</h2>
             </div>
-
+            <div class="chart-section">
+                <h2>5. Observaciones</h2>
+                <ul>
+                    @foreach ($observations as $observation)
+                        <li>{{ $observation }}</li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
-
         </div>
-
-
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -80,7 +81,6 @@
                         fontSize: '12px',
                         fontWeight: 'bold',
                     }
-
                 }
             },
             yaxis: {
@@ -105,8 +105,6 @@
             });
         });
     </script>
-
-
 </body>
-
 </html>
+

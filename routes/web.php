@@ -32,6 +32,6 @@ Route::middleware('auth')->group(function () {
 });
 
 //reportes
-Route::get('/report', [ReportController::class, 'index'])->name('reports.index');
+Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 Route::get('/reports/{courseId}/{instructorId}/{programId}', [ReportController::class, 'show'])->name('reports.show');
-Route::get('/courses', [ReportController::class, 'courses'])->name('courses.index');
+Route::get('reports/general/{instructorId}', [ReportController::class, 'showGeneral'])->name('reports.general');
