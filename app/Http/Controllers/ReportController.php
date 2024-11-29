@@ -29,7 +29,7 @@ class ReportController extends Controller
                 'count' => $group->count(),
             ];
         });
-        $observations = $answers->whereIn('question_id', [21, 22])->map(fn($answer) => $answer->text);
+        $observations = $answers->whereIn('question_id', [21, 22])->map(fn($answer) => $answer->qualification);
         $questions = Question::whereIn('id', $reportData->keys())->pluck('question', 'id');
 
         return view('reports.show', [

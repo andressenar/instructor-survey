@@ -28,7 +28,7 @@
                 <h2>4.Evaluacion</h2>
             </div>
             <div class="chart-section">
-                <h2>5. Observaciones</h2>
+                <h2>5. Observaciones y recomendaciones </h2>
                 <ul>
                     @foreach ($observations as $observation)
                         <li>{{ $observation }}</li>
