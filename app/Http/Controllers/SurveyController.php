@@ -10,17 +10,25 @@ class SurveyController extends Controller
 {
     public function showSurvey($apprenticeId, $surveyId)
     {
-        $survey = Survey::with('questions')->find($surveyId);
-        $user = Auth::user();
-
-    if (!$user->course) {
-        abort(403, 'No estás inscrito en un curso válido.');
+        $survey = Survey::with('questions')->findOrFail($surveyId);
+        $questions = $survey->questions;
+        // Definir divisiones
+        $divisions = [6, 4, 6, 4, 2];
+        $currentPage = request()->get('page', 1);
+    
+        // Calcular el inicio y el límite
+        $start = array_sum(array_slice($divisions, 0, $currentPage - 1));
+        $limit = $divisions[$currentPage - 1] ?? $questions->count() - $start;
+    
+        $paginatedQuestions = $questions->slice($start, $limit);
+    
+        $hasMorePages = $start + $limit < $questions->count();
+    
+        $instructors = Auth::user()->course->instructors ?? [];
+    
+        return view('survey.form', compact('survey', 'paginatedQuestions', 'instructors', 'currentPage', 'hasMorePages', 'apprenticeId'));
     }
-
-    $instructors = $user->course->instructors;
-
-    return view('survey.form', compact('survey', 'instructors'));
-    }
+    
 
     public function storeAnswers(Request $request, $surveyId)
     {
@@ -67,11 +75,6 @@ class SurveyController extends Controller
         return view('survey.complete');
     }
 
-    public function index()
-    {
-        $_SURVEY= Survey::orderBy('id', 'desc' )
-            ->paginate(2);
-        return view('survey.form', compact('survey'));
-    }
+    
 
 }

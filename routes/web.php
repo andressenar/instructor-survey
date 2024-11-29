@@ -24,6 +24,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Rutas protegidas
 Route::middleware('auth')->group(function () {
     Route::get('/survey/{apprenticeId}/{surveyId}', [SurveyController::class, 'showSurvey'])->name('survey.show');
-    Route::post('survey/{id}/submit', [SurveyController::class, 'submitSurvey'])->name('survey.submit');
+    Route::post('/survey/{surveyId}/submit', [SurveyController::class, 'storeAnswers'])->name('survey.submit');
     Route::get('/survey/complete', [SurveyController::class, 'complete'])->name('survey.complete');
+
+    // Nueva ruta para mostrar detalles de una encuesta
+    Route::get('/posts/{id}', [SurveyController::class, 'show'])->name('posts.show');
 });
