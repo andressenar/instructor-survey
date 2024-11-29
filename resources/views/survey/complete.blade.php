@@ -12,8 +12,8 @@
 
     <header class="bg-white text-gray-800 border-b border-gray-300 p-4 shadow-lg">
         <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="../image/logo-sena-verde-complementario-svg-2022.svg" alt="Logo" class="h-10">
+            <div class="flex justify-center">
+                <img src="../img/logo-sena-verde-complementario-svg-2022.svg" alt="Logo SENA" class="w-12 h-12">
             </div>
             <h1 class="text-2xl font-semibold ml-4 flex-grow text-center md:text-left">Encuesta de Acompañamiento</h1>
         </div>
