@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
 
  public function run(): void
     {
-        $this->call([MunicipalitySeeder::class, SurveySeeder::class]);
+        $this->call([MunicipalitySeeder::class, SurveySeeder::class, AdminUserSeeder::class]);
 
         User::factory()->create([
             'name' => 'Test User',

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('second_last_name')->nullable();
             $table->string('identity_document')->unique();
 
+            $table->string('role')->default('apprentice');
+            
             $table->unsignedBigInteger('course_id');
             $table->foreign('course_id')->references('id')->on('courses');
 

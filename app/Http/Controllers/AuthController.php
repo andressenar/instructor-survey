@@ -30,6 +30,13 @@ class AuthController extends Controller
 
             if ($apprentice) {
                 Auth::login($apprentice);
+
+                // Si el aprendiz tiene rol de admin, redirige a la ruta de administración
+                if ($apprentice->role == 'admin') {
+                    return redirect()->route('admin');  // Ruta protegida para administradores
+                }
+
+                // Si el aprendiz no es administrador, redirige a la encuesta
                 return redirect()->route('survey.show', ['apprenticeId' => $apprentice->id, 'surveyId' => 1]);
             }
         }
@@ -43,5 +50,4 @@ class AuthController extends Controller
         return redirect()->route('login.form');
     }
 
-    
 }

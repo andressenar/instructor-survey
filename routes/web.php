@@ -4,10 +4,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SurveyController;
-use App\Models\Question;
-use App\Models\Survey;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
@@ -25,9 +21,13 @@ Route::middleware('auth')->group(function () {
 
 });
 
-//reportes
-Route::get('/report', [ReportController::class, 'index'])->name('reports.index');
-Route::get('/reports/{courseId}/{instructorId}/{programId}', [ReportController::class, 'show'])->name('reports.show');
-Route::get('/courses', [ReportController::class, 'courses'])->name('courses.index');
-Route::get('/admin', [ReportController::class, 'admin'])->name('admin');
-Route::post('/import', [ImportController::class, 'import'])->name('import');
+Route::middleware('admin')->group(function () {
+    Route::get('/admin', [ReportController::class, 'admin'])->name('admin');
+
+    //reportes
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/{courseId}/{instructorId}/{programId}', [ReportController::class, 'show'])->name('reports.show');
+    Route::post('/import', [ImportController::class, 'import'])->name('import');
+    Route::get('reports/general/{instructorId}', [ReportController::class, 'showGeneral'])->name('reports.general');
+
+});
