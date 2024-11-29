@@ -11,6 +11,11 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+    public function admin()
+    {
+        return view('admin.admin');
+    }
+
     public function index()
     {
         $instructors = Instructor::with(['courses.program'])->get();

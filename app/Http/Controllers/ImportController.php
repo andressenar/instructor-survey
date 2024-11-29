@@ -99,11 +99,11 @@ class ImportController extends Controller
             if (!empty($row[0]) && !empty($row[1]) && !empty($row[2]) && !empty($row[3]) && !empty($row[4])) {
                 // Verificar si el instructor ya existe por el documento
                 $instructor = Instructor::firstOrCreate(
-                    ['identity_document' => $row[0]],
+                    ['identity_document' => $row[3]],
                     [
-                        'name' => $row[1],
-                        'last_name' => $row[2],
-                        'second_last_name' => $row[3],
+                        'name' => $row[0],
+                        'last_name' => $row[1],
+                        'second_last_name' => $row[2],
                     ]
                 );
 
