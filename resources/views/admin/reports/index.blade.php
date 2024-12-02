@@ -54,6 +54,7 @@
 
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
     background-color: #45a049;
+    color: #e0f7fa
 }
 
 /* Caja de búsqueda */
@@ -99,7 +100,7 @@
                             class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-gray-900 focus:outline-none focus:ring-green-500 focus:border-green-500">
                     </div>
                     <button type="submit"
-                        class="w-full py-2 px-4 bg-green-600 text-white font-medium rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        class="w-full py-2 px-4 bg-[#38a901] text-white font-medium rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
                         Importar Excel
                     </button>
                 </form>
@@ -114,7 +115,7 @@
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">Reporte de Instructores</h2>
             <button id="open-modal"
-                class="px-6 py-3 text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                class="px-6 py-3 text-white bg-[#38a901] rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
                 Cargue Masivo
             </button>
         </div>
@@ -132,14 +133,14 @@
                     <td class="px-4 py-2">{{ $instructor->name }}</td>
                     <td class="px-4 py-2 text-center">
                         <button onclick="openModal({{ $instructor->id }})"
-                            class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none">
+                            class="px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-[#38a980] focus:outline-none">
                             Ver Fichas Asociadas
                         </button>
                     </td>
                     <td class="px-4 py-2 text-center">
                         <button>
                             <a href="{{ route('reports.general', $instructor->id) }}"
-                                class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none">
+                                class="px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-[#38a980] focus:outline-none">
                                 Reporte General
                             </a>
                         </button>
@@ -158,7 +159,7 @@
                     @foreach ($instructor->courses as $course)
                     <button>
                         <a href="{{ route('reports.show', ['courseId' => $course->id, 'instructorId' => $instructor->id, 'programId' => $course->program->id]) }}"
-                            class="block px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none">
+                            class="block px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-green-700 focus:outline-none">
                             {{ $course->code }}
                         </a>
                     </button>

@@ -13,7 +13,7 @@
 
     <div class="container">
         <h2>Reporte General de Encuestas</h2>
-        <h3>Instructor: {{ $instructor->name}}</h3>
+        <h3>Instructor: {{ $instructor->name }}</h3>
 
         <div class="container-grafic">
             <div class="chart-section" id="chart1">
@@ -28,13 +28,47 @@
             <div class="chart-section" id="chart4">
                 <h2>4. Evaluación General</h2>
             </div>
+            <div class="chart-section"
+                style="padding: 20px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <h2 style="text-align: center; color: #28a745;">5. Observaciones y Recomendaciones</h2>
+
+                <div style="display: flex; justify-content: space-between; gap: 20px;">
+                    <!-- Observaciones -->
+                    <div
+                        style="width: 48%; background-color: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                        <h3 style="color: #28a745; border-bottom: 2px solid#28a745; padding-bottom: 8px;">Observaciones
+                        </h3>
+                        <ul style="list-style: none; padding: 0;">
+                            @foreach ($observations->filter(fn($answer) => $answer->question_id == 21) as $observation)
+                                <li
+                                    style="background-color:  #e9fbe8; padding: 10px; margin-bottom: 8px; border-radius: 5px;">
+                                    {{ $observation->qualification }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+
+                    <!-- Recomendaciones -->
+                    <div
+                        style="width: 48%; background-color: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                        <h3 style="color: #28a745; border-bottom: 2px solid #28a745; padding-bottom: 8px;">
+                            Recomendaciones</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            @foreach ($observations->filter(fn($answer) => $answer->question_id == 22) as $recommendation)
+                                <li
+                                    style="background-color: #e9fbe8; padding: 10px; margin-bottom: 8px; border-radius: 5px;">
+                                    {{ $recommendation->qualification }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const reportData = @json($reportData->pluck('average')->values());
             const questions = @json($questions->values());
 
@@ -52,7 +86,9 @@
                     chart: {
                         type: 'bar',
                         height: 400,
-                        toolbar: { show: false },
+                        toolbar: {
+                            show: false
+                        },
                         animations: {
                             enabled: true,
                             easing: 'easeinout',
@@ -66,7 +102,9 @@
                     }],
                     xaxis: {
                         categories: chunkCategories,
-                        title: { text: 'Preguntas' },
+                        title: {
+                            text: 'Preguntas'
+                        },
                         labels: {
                             rotate: 0,
                             style: {
@@ -76,19 +114,27 @@
                         }
                     },
                     yaxis: {
-                        title: { text: 'Calificación Promedio' },
+                        title: {
+                            text: 'Calificación Promedio'
+                        },
                         min: 0,
                         max: 5
                     },
                     tooltip: {
                         y: {
-                            formatter: function (val) { return val.toFixed(2); }
+                            formatter: function(val) {
+                                return val.toFixed(2);
+                            }
                         }
                     },
                     dataLabels: {
                         enabled: true,
-                        formatter: function (val) { return val.toFixed(2); },
-                        style: { colors: ['#333'] }
+                        formatter: function(val) {
+                            return val.toFixed(2);
+                        },
+                        style: {
+                            colors: ['#333']
+                        }
                     }
                 };
 

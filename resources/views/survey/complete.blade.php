@@ -33,7 +33,7 @@
             <div class="flex justify-center">
                 <a href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                    class="bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300">
+                    class="bg-[#38a901] text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-[#38a901] focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300">
                     Finalizar
                 </a>
             </div>
