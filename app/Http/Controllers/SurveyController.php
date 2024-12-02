@@ -23,10 +23,12 @@ class SurveyController extends Controller
         $paginatedQuestions = $questions->slice($start, $limit);
     
         $hasMorePages = $start + $limit < $questions->count();
+
+        $courseId = session('course_id');
     
         $instructors = Auth::user()->course->instructors ?? [];
     
-        return view('survey.form', compact('survey', 'paginatedQuestions', 'instructors', 'currentPage', 'hasMorePages', 'apprenticeId'));
+        return view('survey.form', compact('survey', 'paginatedQuestions', 'instructors', 'currentPage', 'hasMorePages', 'apprenticeId', 'courseId'));
     }
     
 
@@ -35,6 +37,7 @@ class SurveyController extends Controller
         $data = $request->validate([
             'answers' => 'required|array',
             'answers.*' => 'required|string',
+            'course_id' => 'required|exists:courses,id', 
         ]);
 
         foreach ($data['answers'] as $questionId => $answer) {
@@ -47,6 +50,8 @@ class SurveyController extends Controller
                 'apprentice_id' =>null,
                 'question_id' => $questionId,
                 'instructor_id' => $request->instructor_id,
+                'course_id' => $request->course_id,
+                
             ]);
         }
 
@@ -56,6 +61,20 @@ class SurveyController extends Controller
     public function submitSurvey(Request $request, $surveyId)
     {
 
+        $courseId = session('course_id');
+
+    // Si no existe, redirigir al login o mostrar un mensaje de error
+    if (!$courseId) {
+        return redirect()->route('login.form')->withErrors(['error' => 'No se pudo encontrar el curso asociado al aprendiz.']);
+    }
+
+    // Validación de las respuestas
+    $data = $request->validate([
+        'answers' => 'required|array',
+        'answers.*' => 'required|string',
+    ]);
+
+
         foreach ($request->answers as $instructorId => $questions) {
             foreach ($questions as $questionId => $answer) {
                 Answer::create([
@@ -63,6 +82,7 @@ class SurveyController extends Controller
                     'instructor_id' => $instructorId,
                     'question_id' => $questionId,
                     'qualification' => is_array($answer) ? json_encode($answer) : $answer,
+                    'course_id' => $courseId,  // Usar el `course_id` de la sesión
                 ]);
             }
         }

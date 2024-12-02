@@ -11,7 +11,8 @@ class Answer extends Model
         'qualification',
         'apprentice_id',
         'instructor_id',
-        'question_id'
+        'question_id',
+        'course_id'
     ];
 
     public function apprentice ()

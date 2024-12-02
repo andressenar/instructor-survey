@@ -19,6 +19,10 @@ return new class extends Migration
 
             $table->unsignedBigInteger('apprentice_id')->nullable(); // Esto permite que apprentice_id sea null
             $table->foreign('apprentice_id')->references('id')->on('apprentices')->onDelete('set null');
+/* 
+    $table->unsignedBigInteger('course_id');  
+    $table->foreign('course_id')->references('id')->on('courses'); */
+
 
             $table->unsignedBigInteger('instructor_id');
             $table->foreign('instructor_id')->references('id')->on('instructors');
