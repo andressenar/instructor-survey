@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login.form');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
+Route::post('/import', [ImportController::class, 'import'])->name('import');
 Route::middleware('auth')->group(function () {
     Route::get('/admin', function () {
         if (Auth::user()->role !== 'admin') {
@@ -19,11 +19,11 @@ Route::middleware('auth')->group(function () {
         }
         return view('admin.admin');
     })->name('admin');
-
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/{courseId}/{instructorId}/{programId}', [ReportController::class, 'show'])->name('reports.show');
-    Route::post('/import', [ImportController::class, 'import'])->name('import');
+
     Route::get('reports/general/{instructorId}', [ReportController::class, 'showGeneral'])->name('reports.general');
+
 
     Route::get('/survey/{apprenticeId}/{surveyId}', [SurveyController::class, 'showSurvey'])->name('survey.show');
     Route::post('survey/{id}/submit', [SurveyController::class, 'submitSurvey'])->name('survey.submit');
