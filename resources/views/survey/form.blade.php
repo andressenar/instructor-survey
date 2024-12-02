@@ -21,6 +21,8 @@
             </div>
         </details>
 
+        
+
         <!-- Sección de preguntas: INTEGRALIDAD DEL INSTRUCTOR -->
         @foreach ($paginatedQuestions as $index => $question)
             @if ($index < 6) <!-- Primer grupo de 7 preguntas -->
