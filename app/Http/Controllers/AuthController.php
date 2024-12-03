@@ -28,7 +28,7 @@ class AuthController extends Controller
                 ->where('identity_document', $request->identity_document)
                 ->first();
 
-            
+
 
             if ($apprentice) {
                 Auth::login($apprentice);
@@ -50,6 +50,7 @@ class AuthController extends Controller
         Auth::logout();
         return redirect()->route('login.form');
     }
+
 
 
 }

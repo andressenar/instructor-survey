@@ -44,7 +44,7 @@
                     </div>
 
                     <!-- Botón Ingresar -->
-                    <button type="submit" class="w-full px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-500 focus:ring focus:ring-green-300">
+                    <button type="submit" class="w-full px-4 py-2 text-white bg-[#38a901] rounded-lg hover:bg-[#38a901] focus:ring focus:ring-green-300">
                         INGRESAR
                     </button>
                 </form>

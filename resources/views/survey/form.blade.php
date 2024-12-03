@@ -15,7 +15,7 @@
                     Por favor, marca el número que refleje mejor tu experiencia. Al final encontrarás algunas preguntas abiertas para que puedas darnos más detalles.
                 </p>
             </div>
-        
+
             <!-- Página 2: Título y Escala -->
             <div :class="{ 'hidden': page !== 2 }">
                 <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">Valoración de la Experiencia - Parte 1</h1>
@@ -57,7 +57,7 @@
                     @endforeach
                 </div>
             </div>
-        
+
             <!-- Página 3: Título y preguntas -->
             <div :class="{ 'hidden': page !== 3 }">
                 <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">Valoración de la Experiencia - Parte 2</h1>
@@ -141,7 +141,7 @@
                     @endforeach
                 </div>
                 <!-- 2 preguntas abiertas -->
-            
+
             </div>
 
              <!-- Página 2 -->
@@ -189,7 +189,7 @@
             </div>
 
         </div>
-        
+
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     </div>
