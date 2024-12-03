@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encuesta SENA</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
 
@@ -33,14 +34,24 @@
 
                     <!-- Documento de Identidad -->
                     <div>
-                        <label for="documento" class="block text-sm font-medium text-gray-600">Documento de Identidad</label>
+                        <label for="documento" class="block text-sm font-medium text-gray-600">Usuario</label>
                         <input type="text" id="identity_document" name="identity_document" placeholder="Ingresa tu documento" class="block w-full px-4 py-2 mt-1 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none" required>
                     </div>
 
                     <!-- Ficha -->
                     <div>
-                        <label for="ficha" class="block text-sm font-medium text-gray-600">Ficha</label>
-                        <input type="text" id="course_code" name="course_code" placeholder="Ingresa tu ficha" class="block w-full px-4 py-2 mt-1 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none" required>
+                        <label for="ficha" class="block text-sm font-medium text-gray-600">Contraseña</label>
+                        <div class="relative">
+                            <!-- Campo de contraseña -->
+                            <input type="password" id="course_code" name="course_code" placeholder="Ingresa tu contraseña"
+                                class="block w-full px-4 py-2 mt-1 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none"
+                                required>
+
+                            <!-- Ícono de ojo (FontAwesome) -->
+                            <span class="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer text-gray-500" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
                     </div>
 
                     <!-- Botón Ingresar -->
@@ -52,29 +63,33 @@
                 <!-- Muestra cualquier error de validación si existe -->
                 @if ($errors->any())
                     <div>
+                        <!-- Muestra el primer mensaje de error -->
                         <p>{{ $errors->first() }}</p>
                     </div>
                 @endif
 
-                <!-- Contacto -->
                 <div class="text-center">
-                   <p class="text-sm text-gray-500">Ingresar como <a href="{{ route('login.admin') }}" class="text-green-500 hover:underline">Administrador</a></p>
+                   <p class="text-sm text-gray-500">Ingresar como <a href="{{ route('login.form') }}" class="text-green-500 hover:underline">Aprendiz</a></p>
                 </div>
             </div>
         </div>
     </div>
+
 </body>
 </html>
 
-<style>
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
+<script>
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordField = document.getElementById('course_code');
 
-    input[type="number"] {
-        -moz-appearance: textfield;
-        appearance: none;
-    }
-</style>
+    togglePassword.addEventListener('click', function (e) {
+        const type = passwordField.type === 'password' ? 'text' : 'password';
+        passwordField.type = type;
+
+        if (type === 'password') {
+            togglePassword.innerHTML = `<i class="fas fa-eye"></i>`; // Ojo cerrado
+        } else {
+            togglePassword.innerHTML = `<i class="fas fa-eye-slash"></i>`; // Ojo abierto
+        }
+    });
+</script>

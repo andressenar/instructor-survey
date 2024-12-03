@@ -32,7 +32,7 @@ class AuthController extends Controller
                 Auth::login($apprentice);
 
                 if ($apprentice->role === 'admin') {
-                    return redirect()->route('admin');
+                    return redirect()->route('reports.index');
                 }
 
                 return redirect()->route('survey.show', ['apprenticeId' => $apprentice->id, 'surveyId' => 1]);

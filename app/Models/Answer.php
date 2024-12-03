@@ -12,21 +12,27 @@ class Answer extends Model
         'qualification',
         'apprentice_id',
         'instructor_id',
-        'question_id'
+        'question_id',
+        'course_id'
     ];
-    protected $allowIncluded = ['question','instructor'];
+    protected $allowIncluded = ['question', 'instructor'];
+    
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
 
-    public function apprentice ()
+    public function apprentice()
     {
         return $this->belongsTo(Apprentice::class);
     }
 
-    public function instructor ()
+    public function instructor()
     {
         return $this->belongsTo(Instructor::class);
     }
 
-    public function question ()
+    public function question()
     {
         return $this->belongsTo(Question::class);
     }
@@ -34,8 +40,8 @@ class Answer extends Model
     public function scopeIncluded(Builder $query)
     {
 
-        if(empty($this->allowIncluded)||empty(request('included'))){
-             return;
+        if (empty($this->allowIncluded) || empty(request('included'))) {
+            return;
         }
 
         $relations = explode(',', request('included'));

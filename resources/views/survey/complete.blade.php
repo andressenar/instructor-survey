@@ -12,8 +12,8 @@
 
     <header class="bg-white text-gray-800 border-b border-gray-300 p-4 shadow-lg">
         <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="../image/logo-sena-verde-complementario-svg-2022.svg" alt="Logo" class="h-10">
+            <div class="flex justify-center">
+                <img src="../img/logo-sena-verde-complementario-svg-2022.svg" alt="Logo SENA" class="w-12 h-12">
             </div>
             <h1 class="text-2xl font-semibold ml-4 flex-grow text-center md:text-left">Encuesta de Acompañamiento</h1>
         </div>
@@ -33,7 +33,7 @@
             <div class="flex justify-center">
                 <a href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                    class="bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300">
+                    class="bg-[#38a901] text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-[#38a901] focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300">
                     Finalizar
                 </a>
             </div>
