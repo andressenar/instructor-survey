@@ -13,12 +13,10 @@ class SurveyController extends Controller
         $survey = Survey::with('questions')->find($surveyId);
         $user = Auth::user();
 
-        // Verificar si el usuario está inscrito en un curso
         if (!$user->course) {
             abort(403, 'No estás inscrito en un curso válido.');
         }
 
-        // Obtener los instructores del curso
         $instructors = $user->course->instructors;
 
         return view('survey.form', compact('survey', 'instructors'));
@@ -27,7 +25,6 @@ class SurveyController extends Controller
 
     public function storeAnswers(Request $request, $surveyId)
     {
-        // Validación de las respuestas
         $data = $request->validate([
             'answers' => 'required|array',
             'answers.*' => 'required|string',
@@ -36,22 +33,19 @@ class SurveyController extends Controller
 
         $user = Auth::user();
 
-        // Verificar si el usuario está inscrito en un curso
         if (!$user->course) {
             return redirect()->route('survey.form')->withErrors(['error' => 'No estás inscrito en un curso válido.']);
         }
 
-        // Obtener el curso del usuario autenticado
         $course = $user->course;
 
-        // Guardar las respuestas con el course_id
         foreach ($data['answers'] as $questionId => $answer) {
             Answer::create([
                 'qualification' => $answer,
-                'apprentice_id' => null, // Si las respuestas son anónimas
+                'apprentice_id' => null,
                 'question_id' => $questionId,
                 'instructor_id' => $data['instructor_id'],
-                'course_id' => $course->id, // Asignar el course_id
+                'course_id' => $course->id,
             ]);
         }
 
@@ -63,15 +57,12 @@ class SurveyController extends Controller
     {
         $user = Auth::user();
 
-        // Verificar si el usuario está inscrito en un curso
         if (!$user->course) {
             return redirect()->route('survey.form')->withErrors(['error' => 'No estás inscrito en un curso válido.']);
         }
 
-        // Obtener el curso del usuario autenticado
         $course = $user->course;
 
-        // Guardar las respuestas con el course_id
         foreach ($request->answers as $instructorId => $questions) {
             foreach ($questions as $questionId => $answer) {
                 Answer::create([
@@ -79,7 +70,7 @@ class SurveyController extends Controller
                     'instructor_id' => $instructorId,
                     'question_id' => $questionId,
                     'qualification' => is_array($answer) ? json_encode($answer) : $answer,
-                    'course_id' => $course->id, // Asignar el course_id
+                    'course_id' => $course->id,
                 ]);
             }
         }
