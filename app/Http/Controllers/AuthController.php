@@ -28,8 +28,16 @@ class AuthController extends Controller
                 ->where('identity_document', $request->identity_document)
                 ->first();
 
+            
+
             if ($apprentice) {
                 Auth::login($apprentice);
+                session(['course_id' => $course->id]);
+
+                if ($apprentice->role === 'admin') {
+                    return redirect()->route('reports.index');
+                }
+
                 return redirect()->route('survey.show', ['apprenticeId' => $apprentice->id, 'surveyId' => 1]);
             }
         }
@@ -43,5 +51,5 @@ class AuthController extends Controller
         return redirect()->route('login.form');
     }
 
-    
+
 }
