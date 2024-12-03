@@ -8,11 +8,11 @@
 </head>
 <body class="bg-gray-100">
 
-    <div class="flex flex-col lg:flex-row items-center justify-center min-h-screen">
+    <div class="flex flex-col lg:flex-row items-center justify-center min-h-screen bg-white">
         <!-- Imagen ilustrativa  -->
         <div class="hidden w-2/5 h-full bg-cover lg:block">
             <img src="../img/imagen.png" alt="Imagen ilustrativa" class="w-80 h-auto">
-        </div>        
+        </div>
 
         <!-- Formulario a la derecha -->
         <div class="flex items-center justify-center w-full max-w-md p-8 bg-white rounded-lg shadow-md lg:w-3/5">
@@ -30,7 +30,7 @@
                 <form method="POST" action="{{ route('login.submit') }}" class="space-y-4">
 
                     @csrf
-                    
+
                     <!-- Documento de Identidad -->
                     <div>
                         <label for="documento" class="block text-sm font-medium text-gray-600">Documento de Identidad</label>
@@ -52,19 +52,29 @@
                 <!-- Muestra cualquier error de validación si existe -->
                 @if ($errors->any())
                     <div>
-                        <!-- Muestra el primer mensaje de error -->
                         <p>{{ $errors->first() }}</p>
                     </div>
                 @endif
 
                 <!-- Contacto -->
                 <div class="text-center">
-                    <p class="text-sm text-gray-500">¿Tienes algún problema? <a href="#" class="text-green-500 hover:underline">¡Contáctanos!</a></p>
+                   <p class="text-sm text-gray-500">Ingresar como <a href="{{ route('login.admin') }}" class="text-green-500 hover:underline">Administrador</a></p>
                 </div>
             </div>
         </div>
     </div>
-
-
 </body>
 </html>
+
+<style>
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: none;
+    }
+</style>
