@@ -63,7 +63,7 @@
 
             <div :class="{ 'hidden': page !== 1 }">
                 <div class="p-6 bg-white rounded-lg shadow-lg border border-gray-300">
-                    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">ENCUESTA DE SATISFACCIÓN DEL APRENDIZ EN ETAPA LECTIVA – EJECUCIÓN DE LA FORMACIÓN.</h1>
+                    <h1 class="text-3xl font-extrabold text-gray-800 mb-6 text-center shadow-md p-4 bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-lg">ENCUESTA DE SATISFACCIÓN DEL APRENDIZ EN ETAPA LECTIVA – EJECUCIÓN DE LA FORMACIÓN.</h1>
 
                     <p class="text-lg text-gray-700 leading-relaxed mb-6">
                         Evaluar la satisfacción de los aprendices con respecto a la ejecución de la formación en la etapa lectiva,
@@ -101,6 +101,18 @@
 
             </div>
 
+        @php
+            // Define los títulos
+            $titles = [
+
+                '',
+                '1.	INTEGRALIDAD DEL INSTRUCTOR',
+                '2.	PLANEACION DEL PROCEDIMIENTO DE EJECUCION DE LA FORMACION',
+                '3.	EJECUCION DE LA FORMACION PROFESIONAL',
+                '4. EVALUACIÓN'
+            ];  
+        @endphp
+
         @while ($questionsChunked->isNotEmpty())
             @php
                 $size = $chunkSizes[$currentSizeIndex]; // Tamaño del chunk actual
@@ -109,7 +121,9 @@
             @endphp
             @if ($chunk->isNotEmpty())
             <div :class="{ 'hidden': page !== {{ $pageIndex + 1 }}, 'show': page === {{ $pageIndex + 1 }} }">
-                    <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">4.	EVALUACION</h1>
+                    <h1 class="text-3xl font-extrabold text-gray-800 mb-6 text-center shadow-md p-4 bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-lg">
+                        {{ $titles[$pageIndex % count($titles)] }}
+                    </h1>
                     <details class="mb-6 p-4 bg-white rounded-lg shadow-md border border-gray-300">
                         <summary class="font-semibold bg-green-50 text-green-700 py-2 px-4 rounded-md cursor-pointer hover:bg-green-100 transition-all">
                             Escala de Valoración
@@ -168,7 +182,7 @@
             @endphp
         @endwhile
              <div :class="{ 'hidden': page !== 6 }">
-                <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">Preguntas Abiertas</h1>
+                <h1 class="text-3xl font-extrabold text-gray-800 mb-6 text-center shadow-md p-4 bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-lg">Preguntas Abiertas</h1>
                 <div id="question-container">
                     @foreach ($survey->questions->slice(20, 2) as $question)
                         <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
@@ -206,19 +220,19 @@
                 <button type="button" 
                         @click="if (validatePage(page)) { page--; scrollToTop(); }" 
                         x-show="page > 1" 
-                        class="bg-blue-500 text-white py-2 px-4 rounded">
+                        class="bg-gradient-to-r from-blue-400 to-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out hover:from-blue-500 hover:to-blue-700">
                     Anterior
                 </button>
                 <button type="button" 
                         @click="if (validatePage(page)) { page++; scrollToTop(); }" 
                         x-show="page < 6" 
-                        class="bg-blue-500 text-white py-2 px-4 rounded ml-auto">
+                        class="bg-gradient-to-r from-blue-400 to-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out hover:from-blue-500 hover:to-blue-700 ml-auto">
                     Siguiente
                 </button>
             </div>
 
             <div class="flex justify-end mt-6" x-show="page === 6">
-                <button type="submit" class="bg-green-500 text-white py-2 px-4 rounded">Enviar Encuesta</button>
+                <button type="submit" class="bg-gradient-to-r from-green-500 to-green-700 text-white py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out hover:from-green-600 hover:to-green-800">Enviar Encuesta</button>
                 
             </div>
 
