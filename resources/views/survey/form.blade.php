@@ -1,3 +1,30 @@
+@php
+    $questionsCopy = $survey->questions->toBase(); 
+    $questionsChunked = $questionsCopy->splice(0, 20);
+    $chunkSizes = [6, 4];
+    $currentSizeIndex = 0; 
+    $pageIndex = 1;
+@endphp
+
+<style>
+    
+    .invalid{
+        position: relative;
+    }
+    .invalid ::before{
+        position:absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        content: "";
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+
+        border: 2px solid #EF4444; 
+    }
+</style>
+
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
     function validateForm(event) {
@@ -29,7 +56,7 @@
     <div class="max-w-4xl w-full bg-white shadow-lg rounded-lg p-6">
 
         <div id="warning-message" class="bg-yellow-300 text-yellow-800 p-4 rounded-md mb-6 hidden">
-            <strong>¡Atención!</strong> Aún te faltan campos por completar. Por favor, responde todas las preguntas antes de continuar.
+            <strong>¡Atención!</strong> Aún te faltan campos por completar. Por favor, llena todos los campos antes de continuar.
         </div>  
 
         <div x-data="{ page: 1 }">
@@ -74,230 +101,72 @@
 
             </div>
 
-            <div :class="{ 'hidden': page !== 2 }">
-                <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">1.	INTEGRALIDAD DEL INSTRUCTOR</h1>
-                <details class="mb-6 p-4 bg-white rounded-lg shadow-md border border-gray-300">
-                    <summary class="font-semibold bg-green-50 text-green-700 py-2 px-4 rounded-md cursor-pointer hover:bg-green-100 transition-all">
-                        Escala de Valoración
-                    </summary>
-                    <div class="mt-2 text-sm text-gray-700">
-                        <ul class="list-disc pl-5">
-                            <li><strong>1: Muy insatisfecho / Muy en desacuerdo</strong></li>
-                            <li><strong>2: Insatisfecho / En desacuerdo</strong></li>
-                            <li><strong>3: Neutral / Ni de acuerdo ni desacuerdo</strong></li>
-                            <li><strong>4: Satisfecho / De acuerdo</strong></li>
-                            <li><strong>5: Muy satisfecho / Muy de acuerdo</strong></li>
-                        </ul>
-                    </div>
-                </details>
-
-                <div id="question-container" class="overflow-x-auto p-4">
-                    @foreach ($survey->questions->slice(0, 6) as $question)
-                        <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
-                            <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
-                
-                            <table class="min-w-full table-auto border-collapse border border-gray-300">
-                                <thead>
-                                    <tr class="bg-green-50">
-                                        <th class="px-4 py-2 text-left font-medium text-green-700 w-1/2">Instructor</th>
-                                        @foreach ($question->options as $option)
-                                            <th class="px-2 py-2 text-center text-sm text-green-700 w-[10%]">{{ $option }}</th>
-                                        @endforeach
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($instructors as $instructor)
-                                        <tr class="border-b hover:bg-green-50">
-                                            <td class="px-4 py-3 text-sm text-gray-800 w-1/2">
-                                                <strong>{{ $instructor->name }} {{ $instructor->last_name }} {{$instructor->second_last_name}}</strong>
-                                            </td>
+        @while ($questionsChunked->isNotEmpty())
+            @php
+                $size = $chunkSizes[$currentSizeIndex]; // Tamaño del chunk actual
+                $chunk = $questionsChunked->splice(0, $size); // Extrae los primeros 'size' elementos
+                $currentSizeIndex = ($currentSizeIndex + 1) % 2;
+            @endphp
+            @if ($chunk->isNotEmpty())
+            <div :class="{ 'hidden': page !== {{ $pageIndex + 1 }}, 'show': page === {{ $pageIndex + 1 }} }">
+                    <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">4.	EVALUACION</h1>
+                    <details class="mb-6 p-4 bg-white rounded-lg shadow-md border border-gray-300">
+                        <summary class="font-semibold bg-green-50 text-green-700 py-2 px-4 rounded-md cursor-pointer hover:bg-green-100 transition-all">
+                            Escala de Valoración
+                        </summary>
+                        <div class="mt-2 text-sm text-gray-700">
+                            <ul class="list-disc pl-5">
+                                <li><strong>1: Muy insatisfecho / Muy en desacuerdo</strong></li>
+                                <li><strong>2: Insatisfecho / En desacuerdo</strong></li>
+                                <li><strong>3: Neutral / Ni de acuerdo ni desacuerdo</strong></li>
+                                <li><strong>4: Satisfecho / De acuerdo</strong></li>
+                                <li><strong>5: Muy satisfecho / Muy de acuerdo</strong></li>
+                            </ul>
+                        </div>
+                    </details>
+            
+                    <div id="question-container" class="overflow-x-auto p-4">
+                        @foreach ($chunk as $question) <!-- Iterar sobre el "chunk" de preguntas -->
+                            <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
+                                <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
+            
+                                <table class="min-w-full table-auto border-collapse border border-gray-300">
+                                    <thead>
+                                        <tr class="bg-green-50">
+                                            <th class="px-4 py-2 text-left font-medium text-green-700 w-1/2">Instructor</th>
                                             @foreach ($question->options as $option)
-                                                <td class="px-2 py-2 text-center">
-                                                    <input type="radio"
-                                                           class="h-6 w-6 text-green-600 border-gray-300 focus:ring-green-500"
-                                                           name="answers[{{ $instructor->id }}][{{ $question->id }}]"
-                                                           value="{{ $option }}"
-                                                           id="question-{{ $question->id }}-instructor-{{ $instructor->id }}-{{ $option }}" required>
-                                                </td>
+                                                <th class="px-2 py-2 text-center text-sm text-green-700 w-[10%]">{{ $option }}</th>
                                             @endforeach
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @endforeach
-                </div>
-                
-                
-                
-            </div>
-
-            <div :class="{ 'hidden': page !== 3 }">
-                <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">2.	PLANEACION DEL PROCEDIMIENTO DE EJECUCION DE LA FORMACION</h1>
-                <details class="mb-6 p-4 bg-white rounded-lg shadow-md border border-gray-300">
-                    <summary class="font-semibold bg-green-50 text-green-700 py-2 px-4 rounded-md cursor-pointer hover:bg-green-100 transition-all">
-                        Escala de Valoración
-                    </summary>
-                    <div class="mt-2 text-sm text-gray-700">
-                        <ul class="list-disc pl-5">
-                            <li><strong>1: Muy insatisfecho / Muy en desacuerdo</strong></li>
-                            <li><strong>2: Insatisfecho / En desacuerdo</strong></li>
-                            <li><strong>3: Neutral / Ni de acuerdo ni desacuerdo</strong></li>
-                            <li><strong>4: Satisfecho / De acuerdo</strong></li>
-                            <li><strong>5: Muy satisfecho / Muy de acuerdo</strong></li>
-                        </ul>
-                    </div>
-                </details>
-
-                <div id="question-container" class="overflow-x-auto p-4">
-                    @foreach ($survey->questions->slice(6, 4) as $question)
-                        <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
-                            <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
-                
-                            <table class="min-w-full table-auto border-collapse border border-gray-300">
-                                <thead>
-                                    <tr class="bg-green-50">
-                                        <th class="px-4 py-2 text-left font-medium text-green-700 w-1/2">Instructor</th>
-                                        @foreach ($question->options as $option)
-                                            <th class="px-2 py-2 text-center text-sm text-green-700 w-[10%]">{{ $option }}</th>
-                                        @endforeach
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($instructors as $instructor)
-                                        <tr class="border-b hover:bg-green-50">
-                                            <td class="px-4 py-3 text-sm text-gray-800 w-1/2">
-                                                <strong>{{ $instructor->name }} {{ $instructor->last_name }} {{$instructor->second_last_name}}</strong>
-                                            </td>
-                                            @foreach ($question->options as $option)
-                                                <td class="px-2 py-2 text-center">
-                                                    <input type="radio"
-                                                           class="h-6 w-6 text-green-600 border-gray-300 focus:ring-green-500"
-                                                           name="answers[{{ $instructor->id }}][{{ $question->id }}]"
-                                                           value="{{ $option }}"
-                                                           id="question-{{ $question->id }}-instructor-{{ $instructor->id }}-{{ $option }}" required>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($instructors as $instructor)
+                                            <tr class="border-b hover:bg-green-50">
+                                                <td class="px-4 py-3 text-sm text-gray-800 w-1/2">
+                                                    <strong>{{ $instructor->name }} {{ $instructor->last_name }} {{$instructor->second_last_name}}</strong>
                                                 </td>
-                                            @endforeach
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <div :class="{ 'hidden': page !== 4 }">
-                <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">3.	EJECUCION DE LA FORMACION PROFESIONAL</h1>
-                <details class="mb-6 p-4 bg-white rounded-lg shadow-md border border-gray-300">
-                    <summary class="font-semibold bg-green-50 text-green-700 py-2 px-4 rounded-md cursor-pointer hover:bg-green-100 transition-all">
-                        Escala de Valoración
-                    </summary>
-                    <div class="mt-2 text-sm text-gray-700">
-                        <ul class="list-disc pl-5">
-                            <li><strong>1: Muy insatisfecho / Muy en desacuerdo</strong></li>
-                            <li><strong>2: Insatisfecho / En desacuerdo</strong></li>
-                            <li><strong>3: Neutral / Ni de acuerdo ni desacuerdo</strong></li>
-                            <li><strong>4: Satisfecho / De acuerdo</strong></li>
-                            <li><strong>5: Muy satisfecho / Muy de acuerdo</strong></li>
-                        </ul>
-                    </div>
-                </details>
-
-                <div id="question-container" class="overflow-x-auto p-4">
-                    @foreach ($survey->questions->slice(10, 6) as $question)
-                        <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
-                            <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
-                
-                            <table class="min-w-full table-auto border-collapse border border-gray-300">
-                                <thead>
-                                    <tr class="bg-green-50">
-                                        <th class="px-4 py-2 text-left font-medium text-green-700 w-1/2">Instructor</th>
-                                        @foreach ($question->options as $option)
-                                            <th class="px-2 py-2 text-center text-sm text-green-700 w-[10%]">{{ $option }}</th>
+                                                @foreach ($question->options as $option)
+                                                    <td class="px-2 py-2 text-center">
+                                                        <input type="radio"
+                                                            class="h-6 w-6 border border-red-500"
+                                                            name="answers[{{ $instructor->id }}][{{ $question->id }}]"
+                                                            value="{{ $option }}"
+                                                            id="question-{{ $question->id }}-instructor-{{ $instructor->id }}-{{ $option }}" required>
+                                                    </td>
+                                                @endforeach
+                                            </tr>
                                         @endforeach
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($instructors as $instructor)
-                                        <tr class="border-b hover:bg-green-50">
-                                            <td class="px-4 py-3 text-sm text-gray-800 w-1/2">
-                                                <strong>{{ $instructor->name }} {{ $instructor->last_name }} {{$instructor->second_last_name}}</strong>
-                                            </td>
-                                            @foreach ($question->options as $option)
-                                                <td class="px-2 py-2 text-center">
-                                                    <input type="radio"
-                                                           class="h-6 w-6 text-green-600 border-gray-300 focus:ring-green-500"
-                                                           name="answers[{{ $instructor->id }}][{{ $question->id }}]"
-                                                           value="{{ $option }}"
-                                                           id="question-{{ $question->id }}-instructor-{{ $instructor->id }}-{{ $option }}" required>
-                                                </td>
-                                            @endforeach
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <div :class="{ 'hidden': page !== 5 }">
-                <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">4.	EVALUACION</h1>
-                <details class="mb-6 p-4 bg-white rounded-lg shadow-md border border-gray-300">
-                    <summary class="font-semibold bg-green-50 text-green-700 py-2 px-4 rounded-md cursor-pointer hover:bg-green-100 transition-all">
-                        Escala de Valoración
-                    </summary>
-                    <div class="mt-2 text-sm text-gray-700">
-                        <ul class="list-disc pl-5">
-                            <li><strong>1: Muy insatisfecho / Muy en desacuerdo</strong></li>
-                            <li><strong>2: Insatisfecho / En desacuerdo</strong></li>
-                            <li><strong>3: Neutral / Ni de acuerdo ni desacuerdo</strong></li>
-                            <li><strong>4: Satisfecho / De acuerdo</strong></li>
-                            <li><strong>5: Muy satisfecho / Muy de acuerdo</strong></li>
-                        </ul>
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endforeach
                     </div>
-                </details>
-
-                <div id="question-container" class="overflow-x-auto p-4">
-                    @foreach ($survey->questions->slice(16, 4) as $question)
-                        <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
-                            <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
-                
-                            <table class="min-w-full table-auto border-collapse border border-gray-300">
-                                <thead>
-                                    <tr class="bg-green-50">
-                                        <th class="px-4 py-2 text-left font-medium text-green-700 w-1/2">Instructor</th>
-                                        @foreach ($question->options as $option)
-                                            <th class="px-2 py-2 text-center text-sm text-green-700 w-[10%]">{{ $option }}</th>
-                                        @endforeach
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($instructors as $instructor)
-                                        <tr class="border-b hover:bg-green-50">
-                                            <td class="px-4 py-3 text-sm text-gray-800 w-1/2">
-                                                <strong>{{ $instructor->name }} {{ $instructor->last_name }} {{$instructor->second_last_name}}</strong>
-                                            </td>
-                                            @foreach ($question->options as $option)
-                                                <td class="px-2 py-2 text-center">
-                                                    <input type="radio"
-                                                           class="h-6 w-6 text-green-600 border-gray-300 focus:ring-green-500"
-                                                           name="answers[{{ $instructor->id }}][{{ $question->id }}]"
-                                                           value="{{ $option }}"
-                                                           id="question-{{ $question->id }}-instructor-{{ $instructor->id }}-{{ $option }}" required>
-                                                </td>
-                                            @endforeach
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @endforeach
                 </div>
-
-            </div>
-
+            @endif
+            @php
+                $pageIndex++; // Incrementa el índice de la página
+            @endphp
+        @endwhile
              <div :class="{ 'hidden': page !== 6 }">
                 <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">Preguntas Abiertas</h1>
                 <div id="question-container">
@@ -333,14 +202,17 @@
                     @endforeach
                 </div>
             </div>
-
-            
-
             <div class="flex justify-between mt-6">
-                <button type="button" @click="page--" x-show="page > 1;  scrollToTop()"  class="bg-blue-500 text-white py-2 px-4 rounded">
+                <button type="button" 
+                        @click="if (validatePage(page)) { page--; scrollToTop(); }" 
+                        x-show="page > 1" 
+                        class="bg-blue-500 text-white py-2 px-4 rounded">
                     Anterior
                 </button>
-                <button type="button" @click="page++" x-show="page < 6; scrollToTop()" class="bg-blue-500 text-white py-2 px-4 rounded ml-auto">
+                <button type="button" 
+                        @click="if (validatePage(page)) { page++; scrollToTop(); }" 
+                        x-show="page < 6" 
+                        class="bg-blue-500 text-white py-2 px-4 rounded ml-auto">
                     Siguiente
                 </button>
             </div>
@@ -355,12 +227,51 @@
             
         
         <script>
+            function validatePage(currentPage) {
+                var pagina = document.querySelectorAll('.show');
+                var valid = true;
+                pagina.forEach(function(page) {
+                    var tables = page.querySelectorAll('table');
+                    tables.forEach(function(table) {
+                        var tbody = table.querySelector('tbody');
+                        if (tbody) {
+                            var rows = tbody.querySelectorAll('tr');
+                            rows.forEach(function (row) {
+                                const tdsWithRadios = row.querySelectorAll('td input[type="radio"]');
+                                tdsWithRadios.forEach(function (radio) {
+                                    radio.addEventListener('change', function () {
+                                        const tds = row.querySelectorAll('td');
+                                        tds.forEach(function (td) {
+                                            td.classList.remove("invalid");
+                                        });
+                                    });
+                                });
+                                const isChecked = Array.from(tdsWithRadios).some(input => input.checked);
+                                if (!isChecked) {
+                                    valid = false;
+                                    
+                                    tdsWithRadios.forEach(function (input) {
+                                        input.closest('td').classList.add("invalid");
+                                        
+                                    });
+                                } else {
+                                    tdsWithRadios.forEach(function (input) {
+                                        input.closest('td').classList.remove("invalid");
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+                return valid;
+            }
             function scrollToTop() {
                 window.scrollTo({
                     top: 0,
-                    behavior: 'smooth' // Desplazamiento suave
+                    behavior: 'smooth' 
                 });
             }
+            
         </script>
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
