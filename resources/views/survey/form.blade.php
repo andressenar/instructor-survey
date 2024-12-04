@@ -337,10 +337,10 @@
             
 
             <div class="flex justify-between mt-6">
-                <button type="button" @click="page--" x-show="page > 1"  class="bg-blue-500 text-white py-2 px-4 rounded">
+                <button type="button" @click="page--" x-show="page > 1;  scrollToTop()"  class="bg-blue-500 text-white py-2 px-4 rounded">
                     Anterior
                 </button>
-                <button type="button" @click="page++" x-show="page < 6" class="bg-blue-500 text-white py-2 px-4 rounded ml-auto">
+                <button type="button" @click="page++" x-show="page < 6; scrollToTop()" class="bg-blue-500 text-white py-2 px-4 rounded ml-auto">
                     Siguiente
                 </button>
             </div>
@@ -354,7 +354,14 @@
         
             
         
-
+        <script>
+            function scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth' // Desplazamiento suave
+                });
+            }
+        </script>
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     </div>
