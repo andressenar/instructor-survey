@@ -69,7 +69,7 @@
                 @endif
 
                 <div class="text-center">
-                   <p class="text-sm text-gray-500">Ingresar como <a href="{{ route('login.form') }}" class="text-green-500 hover:underline">Aprendiz</a></p>
+                   <p class="text-sm text-gray-500">Ingresar como <a href="{{ route('login') }}" class="text-green-500 hover:underline">Aprendiz</a></p>
                 </div>
             </div>
         </div>
