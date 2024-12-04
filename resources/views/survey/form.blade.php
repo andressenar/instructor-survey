@@ -3,7 +3,7 @@
     function validateForm(event) {
         let isValid = true;
         const requiredFields = document.querySelectorAll('input[required], select[required], text[required]');
-        
+
         requiredFields.forEach(field => {
             if (!field.checked && field.type === 'radio') {
                 const radioGroup = document.querySelectorAll(`input[name="${field.name}"]`);
@@ -24,13 +24,13 @@
 
 <form action="{{ route('survey.submit', $survey->id) }}" method="POST" class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
     @csrf
-    
+
 
     <div class="max-w-4xl w-full bg-white shadow-lg rounded-lg p-6">
 
         <div id="warning-message" class="bg-yellow-300 text-yellow-800 p-4 rounded-md mb-6 hidden">
             <strong>¡Atención!</strong> Aún te faltan campos por completar. Por favor, responde todas las preguntas antes de continuar.
-        </div>  
+        </div>
 
         <div x-data="{ page: 1 }">
 
@@ -95,7 +95,7 @@
                     @foreach ($survey->questions->slice(0, 6) as $question)
                         <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
                             <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
-                
+
                             <table class="min-w-full table-auto border-collapse border border-gray-300">
                                 <thead>
                                     <tr class="bg-green-50">
@@ -127,9 +127,9 @@
                         </div>
                     @endforeach
                 </div>
-                
-                
-                
+
+
+
             </div>
 
             <div :class="{ 'hidden': page !== 3 }">
@@ -153,7 +153,7 @@
                     @foreach ($survey->questions->slice(6, 4) as $question)
                         <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
                             <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
-                
+
                             <table class="min-w-full table-auto border-collapse border border-gray-300">
                                 <thead>
                                     <tr class="bg-green-50">
@@ -208,7 +208,7 @@
                     @foreach ($survey->questions->slice(10, 6) as $question)
                         <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
                             <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
-                
+
                             <table class="min-w-full table-auto border-collapse border border-gray-300">
                                 <thead>
                                     <tr class="bg-green-50">
@@ -263,7 +263,7 @@
                     @foreach ($survey->questions->slice(16, 4) as $question)
                         <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
                             <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
-                
+
                             <table class="min-w-full table-auto border-collapse border border-gray-300">
                                 <thead>
                                     <tr class="bg-green-50">
@@ -322,7 +322,7 @@
                                             <input type="text" maxlength="30" name="answers[{{ $instructor->id }}][{{ $question->id }}]"
                                                       id="question-{{ $question->id }}-instructor-{{ $instructor->id }}"
 
-                                                      
+
                                                       class="w-full h-12 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500  resize-none text-gray-700 placeholder-gray-400 text-start">
                                             </input>
                                         @endif
@@ -334,7 +334,7 @@
                 </div>
             </div>
 
-            
+
 
             <div class="flex justify-between mt-6">
                 <button type="button" @click="page--" x-show="page > 1"  class="bg-blue-500 text-white py-2 px-4 rounded">
@@ -347,13 +347,13 @@
 
             <div class="flex justify-end mt-6" x-show="page === 6">
                 <button type="submit" class="bg-green-500 text-white py-2 px-4 rounded">Enviar Encuesta</button>
-                
+
             </div>
 
         </div>
-        
-            
-        
+
+
+
 
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
