@@ -1,13 +1,13 @@
 @php
-    $questionsCopy = $survey->questions->toBase(); 
+    $questionsCopy = $survey->questions->toBase();
     $questionsChunked = $questionsCopy->splice(0, 20);
     $chunkSizes = [6, 4];
-    $currentSizeIndex = 0; 
+    $currentSizeIndex = 0;
     $pageIndex = 1;
 @endphp
 
 <style>
-    
+
     .invalid{
         position: relative;
     }
@@ -21,7 +21,7 @@
         height: 25px;
         border-radius: 50%;
 
-        border: 2px solid #EF4444; 
+        border: 2px solid #EF4444;
     }
 </style>
 
@@ -30,7 +30,7 @@
     function validateForm(event) {
         let isValid = true;
         const requiredFields = document.querySelectorAll('input[required], select[required], text[required]');
-        
+
         requiredFields.forEach(field => {
             if (!field.checked && field.type === 'radio') {
                 const radioGroup = document.querySelectorAll(`input[name="${field.name}"]`);
@@ -51,13 +51,13 @@
 
 <form action="{{ route('survey.submit', $survey->id) }}" method="POST" class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
     @csrf
-    
+
 
     <div class="max-w-4xl w-full bg-white shadow-lg rounded-lg p-6">
 
         <div id="warning-message" class="bg-yellow-300 text-yellow-800 p-4 rounded-md mb-6 hidden">
             <strong>¡Atención!</strong> Aún te faltan campos por completar. Por favor, llena todos los campos antes de continuar.
-        </div>  
+        </div>
 
         <div x-data="{ page: 1 }">
 
@@ -110,7 +110,7 @@
                 '2.	PLANEACION DEL PROCEDIMIENTO DE EJECUCION DE LA FORMACION',
                 '3.	EJECUCION DE LA FORMACION PROFESIONAL',
                 '4. EVALUACIÓN'
-            ];  
+            ];
         @endphp
 
         @while ($questionsChunked->isNotEmpty())
@@ -138,12 +138,12 @@
                             </ul>
                         </div>
                     </details>
-            
+
                     <div id="question-container" class="overflow-x-auto p-4">
                         @foreach ($chunk as $question) <!-- Iterar sobre el "chunk" de preguntas -->
                             <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
                                 <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
-            
+
                                 <table class="min-w-full table-auto border-collapse border border-gray-300">
                                     <thead>
                                         <tr class="bg-green-50">
@@ -205,7 +205,7 @@
                                             <input type="text" maxlength="30" name="answers[{{ $instructor->id }}][{{ $question->id }}]"
                                                       id="question-{{ $question->id }}-instructor-{{ $instructor->id }}"
 
-                                                      
+
                                                       class="w-full h-12 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500  resize-none text-gray-700 placeholder-gray-400 text-start">
                                             </input>
                                         @endif
@@ -217,15 +217,15 @@
                 </div>
             </div>
             <div class="flex justify-between mt-6">
-                <button type="button" 
-                        @click="if (validatePage(page)) { page--; scrollToTop(); }" 
-                        x-show="page > 1" 
+                <button type="button"
+                        @click="if (validatePage(page)) { page--; scrollToTop(); }"
+                        x-show="page > 1"
                         class="bg-gradient-to-r from-blue-400 to-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out hover:from-blue-500 hover:to-blue-700">
                     Anterior
                 </button>
-                <button type="button" 
-                        @click="if (validatePage(page)) { page++; scrollToTop(); }" 
-                        x-show="page < 6" 
+                <button type="button"
+                        @click="if (validatePage(page)) { page++; scrollToTop(); }"
+                        x-show="page < 6"
                         class="bg-gradient-to-r from-blue-400 to-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out hover:from-blue-500 hover:to-blue-700 ml-auto">
                     Siguiente
                 </button>
@@ -233,13 +233,13 @@
 
             <div class="flex justify-end mt-6" x-show="page === 6">
                 <button type="submit" class="bg-gradient-to-r from-green-500 to-green-700 text-white py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out hover:from-green-600 hover:to-green-800">Enviar Encuesta</button>
-                
+
             </div>
 
         </div>
-        
-            
-        
+
+
+
         <script>
             function validatePage(currentPage) {
                 var pagina = document.querySelectorAll('.show');
@@ -263,10 +263,10 @@
                                 const isChecked = Array.from(tdsWithRadios).some(input => input.checked);
                                 if (!isChecked) {
                                     valid = false;
-                                    
+
                                     tdsWithRadios.forEach(function (input) {
                                         input.closest('td').classList.add("invalid");
-                                        
+
                                     });
                                 } else {
                                     tdsWithRadios.forEach(function (input) {
@@ -282,10 +282,10 @@
             function scrollToTop() {
                 window.scrollTo({
                     top: 0,
-                    behavior: 'smooth' 
+                    behavior: 'smooth'
                 });
             }
-            
+
         </script>
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
