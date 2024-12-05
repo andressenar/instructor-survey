@@ -7,6 +7,8 @@ use App\Http\Controllers\SurveyController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+use function Spatie\LaravelPdf\Support\pdf;
+
 // Rutas de autenticación
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
 Route::get('login/admin', function() {
@@ -49,4 +51,8 @@ Route::fallback(function () {
 
 // routes/web.php
 Route::get('/report-pdf', 'ReporteController@generarPDF');
+
+Route::get('pdf',function (){
+    return pdf()->html('https://spatie.be/docs/laravel-pdf/v1/basic-usage/creating-pdfs')->name('prueba-2023-04-10.pdf');
+});
 
