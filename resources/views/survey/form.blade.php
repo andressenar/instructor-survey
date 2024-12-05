@@ -31,6 +31,7 @@
         let isValid = true;
         const requiredFields = document.querySelectorAll('input[required], select[required], text[required]');
 
+
         requiredFields.forEach(field => {
             if (!field.checked && field.type === 'radio') {
                 const radioGroup = document.querySelectorAll(`input[name="${field.name}"]`);
@@ -53,9 +54,12 @@
     @csrf
 
 
+
     <div class="max-w-4xl w-full bg-white shadow-lg rounded-lg p-6">
 
         <div id="warning-message" class="bg-yellow-300 text-yellow-800 p-4 rounded-md mb-6 hidden">
+            <strong>¡Atención!</strong> Aún te faltan campos por completar. Por favor, responde todas las preguntas antes de continuar.
+        </div>
             <strong>¡Atención!</strong> Aún te faltan campos por completar. Por favor, llena todos los campos antes de continuar.
         </div>
 
@@ -101,6 +105,80 @@
 
             </div>
 
+            <div :class="{ 'hidden': page !== 2 }">
+                <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">1.	INTEGRALIDAD DEL INSTRUCTOR</h1>
+                <details class="mb-6 p-4 bg-white rounded-lg shadow-md border border-gray-300">
+                    <summary class="font-semibold bg-green-50 text-green-700 py-2 px-4 rounded-md cursor-pointer hover:bg-green-100 transition-all">
+                        Escala de Valoración
+                    </summary>
+                    <div class="mt-2 text-sm text-gray-700">
+                        <ul class="list-disc pl-5">
+                            <li><strong>1: Muy insatisfecho / Muy en desacuerdo</strong></li>
+                            <li><strong>2: Insatisfecho / En desacuerdo</strong></li>
+                            <li><strong>3: Neutral / Ni de acuerdo ni desacuerdo</strong></li>
+                            <li><strong>4: Satisfecho / De acuerdo</strong></li>
+                            <li><strong>5: Muy satisfecho / Muy de acuerdo</strong></li>
+                        </ul>
+                    </div>
+                </details>
+
+                <div id="question-container" class="overflow-x-auto p-4">
+                    @foreach ($survey->questions->slice(0, 6) as $question)
+                        <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
+                            <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
+
+                            <table class="min-w-full table-auto border-collapse border border-gray-300">
+                                <thead>
+                                    <tr class="bg-green-50">
+                                        <th class="px-4 py-2 text-left font-medium text-green-700 w-1/2">Instructor</th>
+                                        @foreach ($question->options as $option)
+                                            <th class="px-2 py-2 text-center text-sm text-green-700 w-[10%]">{{ $option }}</th>
+                                        @endforeach
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($instructors as $instructor)
+                                        <tr class="border-b hover:bg-green-50">
+                                            <td class="px-4 py-3 text-sm text-gray-800 w-1/2">
+                                                <strong>{{ $instructor->name }} {{ $instructor->last_name }} {{$instructor->second_last_name}}</strong>
+                                            </td>
+                                            @foreach ($question->options as $option)
+                                                <td class="px-2 py-2 text-center">
+                                                    <input type="radio"
+                                                           class="h-6 w-6 text-green-600 border-gray-300 focus:ring-green-500"
+                                                           name="answers[{{ $instructor->id }}][{{ $question->id }}]"
+                                                           value="{{ $option }}"
+                                                           id="question-{{ $question->id }}-instructor-{{ $instructor->id }}-{{ $option }}" required>
+                                                </td>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endforeach
+                </div>
+
+
+
+            </div>
+
+            <div :class="{ 'hidden': page !== 3 }">
+                <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">2.	PLANEACION DEL PROCEDIMIENTO DE EJECUCION DE LA FORMACION</h1>
+                <details class="mb-6 p-4 bg-white rounded-lg shadow-md border border-gray-300">
+                    <summary class="font-semibold bg-green-50 text-green-700 py-2 px-4 rounded-md cursor-pointer hover:bg-green-100 transition-all">
+                        Escala de Valoración
+                    </summary>
+                    <div class="mt-2 text-sm text-gray-700">
+                        <ul class="list-disc pl-5">
+                            <li><strong>1: Muy insatisfecho / Muy en desacuerdo</strong></li>
+                            <li><strong>2: Insatisfecho / En desacuerdo</strong></li>
+                            <li><strong>3: Neutral / Ni de acuerdo ni desacuerdo</strong></li>
+                            <li><strong>4: Satisfecho / De acuerdo</strong></li>
+                            <li><strong>5: Muy satisfecho / Muy de acuerdo</strong></li>
+                        </ul>
+                    </div>
+                </details>
         @php
             // Define los títulos
             $titles = [
@@ -138,6 +216,155 @@
                             </ul>
                         </div>
                     </details>
+
+                <div id="question-container" class="overflow-x-auto p-4">
+                    @foreach ($survey->questions->slice(6, 4) as $question)
+                        <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
+                            <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
+
+                            <table class="min-w-full table-auto border-collapse border border-gray-300">
+                                <thead>
+                                    <tr class="bg-green-50">
+                                        <th class="px-4 py-2 text-left font-medium text-green-700 w-1/2">Instructor</th>
+                                        @foreach ($question->options as $option)
+                                            <th class="px-2 py-2 text-center text-sm text-green-700 w-[10%]">{{ $option }}</th>
+                                        @endforeach
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($instructors as $instructor)
+                                        <tr class="border-b hover:bg-green-50">
+                                            <td class="px-4 py-3 text-sm text-gray-800 w-1/2">
+                                                <strong>{{ $instructor->name }} {{ $instructor->last_name }} {{$instructor->second_last_name}}</strong>
+                                            </td>
+                                            @foreach ($question->options as $option)
+                                                <td class="px-2 py-2 text-center">
+                                                    <input type="radio"
+                                                           class="h-6 w-6 text-green-600 border-gray-300 focus:ring-green-500"
+                                                           name="answers[{{ $instructor->id }}][{{ $question->id }}]"
+                                                           value="{{ $option }}"
+                                                           id="question-{{ $question->id }}-instructor-{{ $instructor->id }}-{{ $option }}" required>
+                                                </td>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div :class="{ 'hidden': page !== 4 }">
+                <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">3.	EJECUCION DE LA FORMACION PROFESIONAL</h1>
+                <details class="mb-6 p-4 bg-white rounded-lg shadow-md border border-gray-300">
+                    <summary class="font-semibold bg-green-50 text-green-700 py-2 px-4 rounded-md cursor-pointer hover:bg-green-100 transition-all">
+                        Escala de Valoración
+                    </summary>
+                    <div class="mt-2 text-sm text-gray-700">
+                        <ul class="list-disc pl-5">
+                            <li><strong>1: Muy insatisfecho / Muy en desacuerdo</strong></li>
+                            <li><strong>2: Insatisfecho / En desacuerdo</strong></li>
+                            <li><strong>3: Neutral / Ni de acuerdo ni desacuerdo</strong></li>
+                            <li><strong>4: Satisfecho / De acuerdo</strong></li>
+                            <li><strong>5: Muy satisfecho / Muy de acuerdo</strong></li>
+                        </ul>
+                    </div>
+                </details>
+
+                <div id="question-container" class="overflow-x-auto p-4">
+                    @foreach ($survey->questions->slice(10, 6) as $question)
+                        <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
+                            <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
+
+                            <table class="min-w-full table-auto border-collapse border border-gray-300">
+                                <thead>
+                                    <tr class="bg-green-50">
+                                        <th class="px-4 py-2 text-left font-medium text-green-700 w-1/2">Instructor</th>
+                                        @foreach ($question->options as $option)
+                                            <th class="px-2 py-2 text-center text-sm text-green-700 w-[10%]">{{ $option }}</th>
+                                        @endforeach
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($instructors as $instructor)
+                                        <tr class="border-b hover:bg-green-50">
+                                            <td class="px-4 py-3 text-sm text-gray-800 w-1/2">
+                                                <strong>{{ $instructor->name }} {{ $instructor->last_name }} {{$instructor->second_last_name}}</strong>
+                                            </td>
+                                            @foreach ($question->options as $option)
+                                                <td class="px-2 py-2 text-center">
+                                                    <input type="radio"
+                                                           class="h-6 w-6 text-green-600 border-gray-300 focus:ring-green-500"
+                                                           name="answers[{{ $instructor->id }}][{{ $question->id }}]"
+                                                           value="{{ $option }}"
+                                                           id="question-{{ $question->id }}-instructor-{{ $instructor->id }}-{{ $option }}" required>
+                                                </td>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div :class="{ 'hidden': page !== 5 }">
+                <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">4.	EVALUACION</h1>
+                <details class="mb-6 p-4 bg-white rounded-lg shadow-md border border-gray-300">
+                    <summary class="font-semibold bg-green-50 text-green-700 py-2 px-4 rounded-md cursor-pointer hover:bg-green-100 transition-all">
+                        Escala de Valoración
+                    </summary>
+                    <div class="mt-2 text-sm text-gray-700">
+                        <ul class="list-disc pl-5">
+                            <li><strong>1: Muy insatisfecho / Muy en desacuerdo</strong></li>
+                            <li><strong>2: Insatisfecho / En desacuerdo</strong></li>
+                            <li><strong>3: Neutral / Ni de acuerdo ni desacuerdo</strong></li>
+                            <li><strong>4: Satisfecho / De acuerdo</strong></li>
+                            <li><strong>5: Muy satisfecho / Muy de acuerdo</strong></li>
+                        </ul>
+                    </div>
+                </details>
+
+                <div id="question-container" class="overflow-x-auto p-4">
+                    @foreach ($survey->questions->slice(16, 4) as $question)
+                        <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
+                            <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
+
+                            <table class="min-w-full table-auto border-collapse border border-gray-300">
+                                <thead>
+                                    <tr class="bg-green-50">
+                                        <th class="px-4 py-2 text-left font-medium text-green-700 w-1/2">Instructor</th>
+                                        @foreach ($question->options as $option)
+                                            <th class="px-2 py-2 text-center text-sm text-green-700 w-[10%]">{{ $option }}</th>
+                                        @endforeach
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($instructors as $instructor)
+                                        <tr class="border-b hover:bg-green-50">
+                                            <td class="px-4 py-3 text-sm text-gray-800 w-1/2">
+                                                <strong>{{ $instructor->name }} {{ $instructor->last_name }} {{$instructor->second_last_name}}</strong>
+                                            </td>
+                                            @foreach ($question->options as $option)
+                                                <td class="px-2 py-2 text-center">
+                                                    <input type="radio"
+                                                           class="h-6 w-6 text-green-600 border-gray-300 focus:ring-green-500"
+                                                           name="answers[{{ $instructor->id }}][{{ $question->id }}]"
+                                                           value="{{ $option }}"
+                                                           id="question-{{ $question->id }}-instructor-{{ $instructor->id }}-{{ $option }}" required>
+                                                </td>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endforeach
+                </div>
+
+            </div>
 
                     <div id="question-container" class="overflow-x-auto p-4">
                         @foreach ($chunk as $question) <!-- Iterar sobre el "chunk" de preguntas -->
@@ -206,6 +433,7 @@
                                                       id="question-{{ $question->id }}-instructor-{{ $instructor->id }}"
 
 
+
                                                       class="w-full h-12 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500  resize-none text-gray-700 placeholder-gray-400 text-start">
                                             </input>
                                         @endif
@@ -216,6 +444,9 @@
                     @endforeach
                 </div>
             </div>
+
+
+
             <div class="flex justify-between mt-6">
                 <button type="button"
                         @click="if (validatePage(page)) { page--; scrollToTop(); }"
@@ -232,11 +463,17 @@
             </div>
 
             <div class="flex justify-end mt-6" x-show="page === 6">
+                <button type="submit" class="bg-green-500 text-white py-2 px-4 rounded">Enviar Encuesta</button>
+
                 <button type="submit" class="bg-gradient-to-r from-green-500 to-green-700 text-white py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out hover:from-green-600 hover:to-green-800">Enviar Encuesta</button>
 
             </div>
 
         </div>
+
+
+
+
 
 
 
