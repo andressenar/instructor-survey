@@ -115,8 +115,8 @@
 
         @while ($questionsChunked->isNotEmpty())
             @php
-                $size = $chunkSizes[$currentSizeIndex]; // Tamaño del chunk actual
-                $chunk = $questionsChunked->splice(0, $size); // Extrae los primeros 'size' elementos
+                $size = $chunkSizes[$currentSizeIndex];
+                $chunk = $questionsChunked->splice(0, $size);
                 $currentSizeIndex = ($currentSizeIndex + 1) % 2;
             @endphp
             @if ($chunk->isNotEmpty())
@@ -140,7 +140,7 @@
                     </details>
 
                     <div id="question-container" class="overflow-x-auto p-4">
-                        @foreach ($chunk as $question) <!-- Iterar sobre el "chunk" de preguntas -->
+                        @foreach ($chunk as $question)
                             <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
                                 <h4 class="text-2xl font-semibold text-green-700 mb-4">{{ $question->question }}</h4>
 
@@ -178,11 +178,16 @@
                 </div>
             @endif
             @php
-                $pageIndex++; // Incrementa el índice de la página
+                $pageIndex++;
             @endphp
         @endwhile
              <div :class="{ 'hidden': page !== 6 }">
                 <h1 class="text-3xl font-extrabold text-gray-800 mb-6 text-center shadow-md p-4 bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-lg">Preguntas Abiertas</h1>
+                <div class="mb-6 p-4 bg-yellow-100 text-yellow-800 border border-yellow-300 rounded-lg text-center">
+                    <p class="text-sm font-medium">
+                        Nota: Todas las preguntas en esta sección son opcionales. Responde solo si deseas compartir tu opinión.
+                    </p>
+                </div>
                 <div id="question-container">
                     @foreach ($survey->questions->slice(20, 2) as $question)
                         <div class="mb-4 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
