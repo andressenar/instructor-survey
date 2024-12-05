@@ -19,6 +19,19 @@ class ReportController extends Controller
     public function index()
     {
         $instructors = Instructor::with(['courses.program'])->get();
+
+        // Agregar las propiedades necesarias
+        $instructors->each(function ($instructor) {
+            // Verificar si tiene respuestas generales
+            $instructor->hasGeneralAnswers = Answer::where('instructor_id', $instructor->id)->exists();
+
+            // Verificar si sus cursos tienen respuestas
+            $instructor->courses->each(function ($course) {
+                $course->hasAnswers = Answer::where('course_id', $course->id)->exists();
+            });
+        });
+
+
         return view('admin.reports.index', compact('instructors'));
     }
     public function show($courseId, $instructorId, $programId)
