@@ -46,3 +46,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::fallback(function () {
     return redirect()->route('login');
 });
+
+// routes/web.php
+Route::get('/report-pdf', 'ReporteController@generarPDF');
+

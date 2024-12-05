@@ -14,6 +14,8 @@
     <div class="container">
         <h2>Reporte General de Encuestas</h2>
         <h3>Instructor: {{ $instructor->name }}</h3>
+        <button id="Downloadpdf1">Descargar downloadCombinedPNG en alta calidad</button>
+        <button id="downloadUnifiedPNG">Descargar Imagen Unificada</button>
 
         <div class="container-grafic">
             <div class="chart-section" id="chart1">
@@ -67,49 +69,52 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <script>
-       document.addEventListener('DOMContentLoaded', function() {
+    const { jsPDF } = window.jspdf;
+      // Función para dividir el texto en varias líneas
+      function splitText(text, maxLength) {
+    const words = text.split(' '); // Dividimos el texto en palabras
+    let lines = [];
+    let currentLine = '';
+
+    words.forEach((word) => {
+        // Si agregar la palabra excede el límite de longitud, comenzamos una nueva línea
+        if ((currentLine + word).length <= maxLength) {
+            currentLine += (currentLine ? ' ' : '') + word; // Añadimos la palabra al final de la línea
+        } else {
+            lines.push(currentLine); // Añadimos la línea completa al array
+            currentLine = word; // Empezamos una nueva línea con la palabra actual
+        }
+    });
+
+    // Agregamos la última línea
+    if (currentLine) {
+        lines.push(currentLine);
+    }
+
+    return lines;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
     const reportData = @json($reportData->pluck('average')->values());
-    const questions = @json($questions->values());
+    const questions = JSON.parse(@json($questions)); // Convertimos JSON en un array
+
+    // Comprobación para asegurarnos que questions es un array
+    if (!Array.isArray(questions)) {
+        console.error("La variable 'questions' no es un array:", questions);
+    }
 
     const distribution = [6, 4, 6, 4]; // Cantidad de preguntas por gráfica
     let startIndex = 0;
 
-    function splitText(text, maxChars) {
-  const words = text.split(' ');
-  let line = '';
-  const lines = [];
-
-  words.forEach(word => {
-    if ((line + word).length > maxChars) {
-      lines.push(line.trim());
-      line = '';
-    }
-    line += `${word} `;
-  });
-
-  if (line.trim()) {
-    lines.push(line.trim());
-  }
-
-  return lines;
-}
-
-
     distribution.forEach((count, index) => {
         const chunkData = reportData.slice(startIndex, startIndex + count);
-        const chunkCategories = questions.slice(startIndex, startIndex + count).map(q => {
-            return q.length > 20 ? q.substring(0, 25) + '...' : q;
-        });
-
-        // Colores dinámicos para cada barra
-        const colors = ['#2196F3', '#FF5733', '#33FF57', '#3357FF', '#FFC300', '#8E44AD'];
-
-        const seriesData = chunkData.map((value, i) => ({
-            x: chunkCategories[i], // Categoría
-            y: value, // Valor
-            fillColor: colors[i % colors.length] // Ciclar colores si hay más barras que colores
-        }));
+        const chunkCategories = questions
+            .slice(startIndex, startIndex + count)  // Usamos slice aquí
+            .map((q) => splitText(q, 23)); // Dividir el texto en líneas aquí
 
         startIndex += count;
 
@@ -118,62 +123,160 @@
                 type: 'bar',
                 height: 400,
                 toolbar: {
-                    show: false
+                    show: false,
                 },
-                animations: {
-                    enabled: true,
-                    easing: 'easeinout',
-                    speed: 800,
-                }
             },
-            series: [{
-                name: 'Promedio de Calificación',
-                data: seriesData // Datos con colores personalizados
-            }],
-            xaxis: {
-                title: {
-                    text: 'Preguntas'
+            series: [
+                {
+                    name: 'Promedio de Calificación',
+                    data: chunkData,
                 },
+            ],
+            xaxis: {
+                categories: chunkCategories,
                 labels: {
-                    rotate: 0,
                     style: {
                         fontSize: '12px',
                         fontWeight: 'bold',
-                    }
-                }
+                    },
+                },
             },
             yaxis: {
                 title: {
-                    text: 'Calificación Promedio'
+                    text: 'Calificación Promedio',
                 },
                 min: 0,
-                max: 5
+                max: 5,
+                labels: {
+            formatter: function (val) {
+                return val.toFixed(2); // Redondear a dos decimales
+            },
+        },
             },
             tooltip: {
                 y: {
-                    formatter: function(val) {
+                    formatter: function (val) {
                         return val.toFixed(2);
-                    }
-                }
+                    },
+                },
             },
             dataLabels: {
                 enabled: true,
-                formatter: function(val) {
+                formatter: function (val) {
                     return val.toFixed(2);
                 },
                 style: {
-                    colors: ['#333']
-                }
-            }
+                    colors: ['#333'],
+                },
+            },
         };
 
-        const chart = new ApexCharts(document.querySelector(`#chart${index + 1}`), options);
+        const chart = new ApexCharts(
+            document.querySelector(`#chart${index + 1}`),
+            options
+        );
         chart.render();
     });
 });
+document.getElementById('Downloadpdf1').addEventListener('click', async function () {
+    const content = document.querySelector(".container");
 
-    </script>
+    if (!content) {
+        console.error("No se encontró el contenedor '.content'.");
+        return;
+    }
 
+    // Crear un canvas y renderizar el contenido de .content
+    const scaleFactor = 1; // Reducir el escalado
+    const canvasWidth = content.offsetWidth;
+    const canvasHeight = content.offsetHeight;
+
+    try {
+        // Usar html2canvas para capturar el contenido
+        const canvas = await html2canvas(content, {
+            scale: scaleFactor,
+            useCORS: true, // Permitir contenido externo si es necesario
+        });
+
+        // Convertir el canvas a imagen optimizada
+        const imgData = canvas.toDataURL("image/png", 0.5); // Calidad optimizada (50%)
+
+        // Reducción del ancho (ajustando a un porcentaje)
+        const reducedWidth = canvas.width * 1; // Reducir el ancho al 80%
+        const reducedHeight = canvas.height * (reducedWidth / canvas.width); // Mantener la proporción
+
+        // Crear un PDF con las dimensiones reducidas
+        const pdf = new jsPDF({
+            orientation: "portrait",
+            unit: "px",
+            format: [reducedWidth, reducedHeight],
+        });
+
+        // Añadir la imagen al PDF con las dimensiones ajustadas
+        pdf.addImage(imgData, "png", 0, 0, reducedWidth, reducedHeight);
+
+        // Descargar el PDF
+        pdf.save("content_reduced.pdf");
+
+    } catch (error) {
+        console.error("Error al generar el PDF:", error);
+    }
+});
+
+document.getElementById('downloadpdf2').addEventListener('click', async function () {
+    const content = document.querySelector(".container");
+
+    if (!content) {
+        console.error("No se encontró el contenedor '.content'.");
+        return;
+    }
+
+    // Escala reducida para una imagen más liviana
+    const scaleFactor = 1.5; // Reducir el escalado
+    const canvasWidth = content.offsetWidth;
+    const canvasHeight = content.offsetHeight;
+
+    try {
+        // Usar html2canvas para capturar el contenido
+        const canvas = await html2canvas(content, {
+            scale: scaleFactor,
+            useCORS: true, // Permitir contenido externo si es necesario
+        });
+
+        // Convertir el canvas a imagen optimizada (formato PNG)
+        const imgData = canvas.toDataURL("image/png", 0.5); // Reducir la calidad de la imagen (50%)
+
+        // Crear un enlace de descarga
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = 'unified_content.png';
+
+        // Simular un clic para descargar la imagen
+        link.click();
+
+// Crear un PDF con la imagen
+const pdf = new jsPDF({
+    orientation: "portrait",
+    unit: "px",
+    format: [canvasWidth, canvasHeight],
+});
+
+// Añadir la imagen al PDF
+pdf.addImage(imgData, "PNG", 0, 0, canvasWidth, canvasHeight);
+
+// Descargar el PDF
+pdf.save("unified_content.pdf");
+
+} catch (error) {
+console.error("Error al generar la imagen o el PDF:", error);
+}
+});
+
+
+
+</script>
+        
+    
 </body>
 
 </html>

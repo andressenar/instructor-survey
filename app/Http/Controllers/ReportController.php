@@ -9,6 +9,7 @@ use App\Models\Program;
 use App\Models\Question;
 use Illuminate\Http\Request;
 
+
 class ReportController extends Controller
 {
     public function admin()
@@ -82,8 +83,7 @@ class ReportController extends Controller
         // Paso 2: Obtener todas las respuestas de las fichas asociadas al instructor
         $answers = Answer::where('instructor_id', $instructorId)
             ->whereHas('course', function ($query) {
-                // Considera solo las respuestas asociadas a cursos activos o asignados al instructor
-                $query->whereNotNull('id'); // Puedes añadir condiciones específicas si lo deseas
+                $query->whereNotNull('id');
             })
             ->get();
 
@@ -99,17 +99,41 @@ class ReportController extends Controller
             });
 
         // Paso 4: Recoger observaciones para preguntas abiertas (ID 21 y 22)
-        $observations = $answers->whereIn('question_id', [21, 22]);
+        $observations = $answers->whereIn('question_id', [21, 22])
+                ->filter(fn($answer) => !is_null($answer->qualification) && $answer->qualification !== '');
+;
 
         // Paso 5: Obtener las preguntas asociadas a las respuestas
-        $questions = Question::whereIn('id', $reportData->keys())->pluck('question', 'id');
+        $questions = Question::whereIn('id', $reportData->keys())
+            ->pluck('question', 'id')
+            ->values()  // Nos aseguramos de obtener solo los valores
+            ->toArray();  // Convertimos a un array simple de JavaScript
 
         // Paso 6: Retornar la vista del reporte con toda la información consolidada
-        return view('admin/reports.general', [
+        return view('admin.reports.general', [
             'reportData' => $reportData,
-            'questions' => $questions,
+            'questions' => json_encode($questions),  // Pasamos a JSON
             'observations' => $observations,
             'instructor' => $instructor
         ]);
+    }
+
+    public function generarPDF($instructorId)
+    {
+        $instructor = Instructor::find($instructorId);
+        $answers = Answer::where('instructor_id', $instructorId)->get();
+        $reportData = $answers->where('question_id', '<', 21)
+            ->groupBy('question_id')
+            ->map(function ($group) {
+                $calificaciones = $group->pluck('qualification')->map(fn($value) => (int)$value);
+                return [
+                    'average' => $calificaciones->avg(),
+                    'count' => $group->count(),
+                ];
+            });
+        $observations = $answers->whereIn('question_id', [21, 22]);
+        $questions = Question::whereIn('id', $reportData->keys())->pluck('question', 'id');
+
+      
     }
 }
