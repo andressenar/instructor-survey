@@ -165,22 +165,15 @@
                 class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                 <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
                     <h2 class="text-lg font-semibold text-gray-800 mb-4">Fichas Asociadas a {{ $instructor->name }}</h2>
+
                     <div class="space-y-2">
                         @foreach ($instructor->courses as $course)
-                            @if ($course->hasAnswers)
-                                <button>
-                                    <a href="{{ route('reports.show', ['courseId' => $course->id, 'instructorId' => $instructor->id, 'programId' => $course->program->id]) }}"
-                                        class="block px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-green-700 focus:outline-none">
-                                        {{ $course->code }}
-                                    </a>
-                                </button>
-                            @else
-                                <button disabled>
-                                    <a class="block px-4 py-2 bg-gray-400 text-white rounded-lg focus:outline-none cursor-not-allowed">
-                                        {{ $course->code }}
-                                    </a>
-                                </button>
-                            @endif
+                            <button>
+                                <a href="{{ route('reports.show', ['courseId' => $course->id, 'instructorId' => $instructor->id, 'programId' => $course->program->id]) }}"
+                                    class="block px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-green-700 focus:outline-none">
+                                    {{ $course->code }}
+                                </a>
+                            </button>
                         @endforeach
                     </div>
                     <button onclick="closeModal({{ $instructor->id }})"
