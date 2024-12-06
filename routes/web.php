@@ -53,6 +53,6 @@ Route::fallback(function () {
 Route::get('/report-pdf', 'ReporteController@generarPDF');
 
 Route::get('pdf',function (){
-    return pdf()->html('https://spatie.be/docs/laravel-pdf/v1/basic-usage/creating-pdfs')->name('prueba-2023-04-10.pdf');
+    return pdf()->view('admin.reports.general')->name('prueba-2023-04-10.pdf');
 });
 

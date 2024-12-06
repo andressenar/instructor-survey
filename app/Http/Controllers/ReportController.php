@@ -8,6 +8,9 @@ use App\Models\Instructor;
 use App\Models\Program;
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Spatie\Browsershot\Browsershot;
+
+use function Spatie\LaravelPdf\Support\pdf;
 
 
 class ReportController extends Controller
@@ -110,12 +113,27 @@ class ReportController extends Controller
             ->toArray();  // Convertimos a un array simple de JavaScript
 
         // Paso 6: Retornar la vista del reporte con toda la información consolidada
-        return view('admin.reports.general', [
-            'reportData' => $reportData,
-            'questions' => json_encode($questions),  // Pasamos a JSON
-            'observations' => $observations,
-            'instructor' => $instructor
-        ]);
+        // return view('admin.reports.general', [
+        //     'reportData' => $reportData,
+        //     'questions' => json_encode($questions),  // Pasamos a JSON
+        //     'observations' => $observations,
+        //     'instructor' => $instructor
+        // ]);
+        $htmlcontent = view('admin.reports.general', [
+                'reportData' => $reportData,
+                'questions' => json_encode($questions),  // Pasamos a JSON
+                'observations' => $observations,
+                'instructor' => $instructor
+            ])
+            ->render();
+
+        return pdf()
+        ->html($htmlcontent)
+        ->withBrowserShot(function(Browsershot $browsershot){
+            $browsershot->waitUntilNetworkIdle();
+        })
+        ->name('prueba-2023-04-10.pdf');
+
     }
 
     public function generarPDF($instructorId)
