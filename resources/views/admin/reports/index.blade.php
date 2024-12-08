@@ -137,7 +137,7 @@
             <tbody>
                 @foreach ($instructors as $instructor)
                 <tr class="border-b">
-                    <td class="px-4 py-2">{{ $instructor->name }}</td>
+                    <td class="px-4 py-2">{{ $instructor->name }} {{ $instructor->last_name}} {{$instructor->second_last_name}}</td>
                     <td class="px-4 py-2 text-center">
                         <button onclick="openModal({{ $instructor->id }})"
                             class="px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-[#38a980] focus:outline-none">
@@ -147,7 +147,7 @@
                     <td class="px-4 py-2 text-center">
                         <button>
                             <a href="{{ route('reports.general', $instructor->id) }}"
-                                class="px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-[#38a980] focus:outline-none">
+                                class="block px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-green-700 focus:outline-none">
                                 Reporte General
                             </a>
                         </button>
@@ -161,7 +161,7 @@
         @foreach ($instructors as $instructor)
         <div id="modal-{{ $instructor->id }}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Fichas Asociadas a {{ $instructor->name }}</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Fichas Asociadas a {{ $instructor->name }} {{ $instructor->last_name}} {{$instructor->second_last_name}}</h2>
                 <div class="space-y-2">
                     @foreach ($instructor->courses as $course)
                     <button>
