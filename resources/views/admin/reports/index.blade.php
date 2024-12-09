@@ -136,52 +136,48 @@
             </thead>
             <tbody>
                 @foreach ($instructors as $instructor)
-                    <tr class="border-b">
-                        <td class="px-4 py-2">{{ $instructor->name }}</td>
-                        <td class="px-4 py-2 text-center">
-                            <button onclick="openModal({{ $instructor->id }})"
-                                class="px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-[#38a980] focus:outline-none">
-                                Ver Fichas Asociadas
-                            </button>
-                        </td>
-                        <td class="px-4 py-2 text-center">
-                            <button @if (!$instructor->hasGeneralAnswers) disabled @endif>
-                                <a href="{{ $instructor->hasGeneralAnswers ? route('reports.general', $instructor->id) : '#' }}"
-                                    class="px-4 py-2 rounded-lg focus:outline-none
-                                @if ($instructor->hasGeneralAnswers) bg-[#38a901] text-white hover:bg-[#38a980]
-                                @else bg-gray-400 text-white cursor-not-allowed @endif">
-                                    Reporte General
-                                </a>
-                            </button>
-                        </td>
-                    </tr>
+                <tr class="border-b">
+                    <td class="px-4 py-2">{{ $instructor->name }} {{ $instructor->last_name}} {{$instructor->second_last_name}}</td>
+                    <td class="px-4 py-2 text-center">
+                        <button onclick="openModal({{ $instructor->id }})"
+                            class="px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-[#38a980] focus:outline-none">
+                            Ver Fichas Asociadas
+                        </button>
+                    </td>
+                    <td class="px-4 py-2 text-center">
+                        <button>
+                            <a href="{{ route('reports.general', $instructor->id) }}"
+                                class="block px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-green-700 focus:outline-none">
+                                Reporte General
+                            </a>
+                        </button>
+                    </td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
 
         <!-- Modales para Fichas -->
         @foreach ($instructors as $instructor)
-            <div id="modal-{{ $instructor->id }}"
-                class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Fichas Asociadas a {{ $instructor->name }}</h2>
-
-                    <div class="space-y-2">
-                        @foreach ($instructor->courses as $course)
-                            <button>
-                                <a href="{{ route('reports.show', ['courseId' => $course->id, 'instructorId' => $instructor->id, 'programId' => $course->program->id]) }}"
-                                    class="block px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-green-700 focus:outline-none">
-                                    {{ $course->code }}
-                                </a>
-                            </button>
-                        @endforeach
-                    </div>
-                    <button onclick="closeModal({{ $instructor->id }})"
-                        class="mt-4 w-full py-2 px-4 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                        Cerrar
+        <div id="modal-{{ $instructor->id }}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Fichas Asociadas a {{ $instructor->name }} {{ $instructor->last_name}} {{$instructor->second_last_name}}</h2>
+                <div class="space-y-2">
+                    @foreach ($instructor->courses as $course)
+                    <button>
+                        <a href="{{ route('reports.show', ['courseId' => $course->id, 'instructorId' => $instructor->id, 'programId' => $course->program->id]) }}"
+                            class="block px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-green-700 focus:outline-none">
+                            {{ $course->code }}
+                        </a>
                     </button>
+                    @endforeach
                 </div>
+                <button onclick="closeModal({{ $instructor->id }})"
+                    class="mt-4 w-full py-2 px-4 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    Cerrar
+                </button>
             </div>
+        </div>
         @endforeach
     </div>
     <script>
