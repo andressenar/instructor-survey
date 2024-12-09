@@ -129,13 +129,87 @@ class ReportController extends Controller
             ->toArray();  // Convertimos a un array simple de JavaScript
 
         // Paso 6: Retornar la vista del reporte con toda la información consolidada
-        return view('admin.reports.general', [
+        return view('admin/reports/general', [
             'reportData' => $reportData,
             'questions' => json_encode($questions),  // Pasamos a JSON
             'observations' => $observations,
             'instructor' => $instructor
         ]);
     }
+    
 
-   
+    
+    
+
+    public function showGeneralDownload($instructorId)
+    {
+        try {
+            // Paso 1: Verificar que el instructor existe
+            $instructor = Instructor::find($instructorId);
+            if (!$instructor) {
+                return back()->withErrors("El instructor no existe.");
+            }
+
+            // Paso 2: Obtener todas las respuestas
+            $answers = Answer::where('instructor_id', $instructorId)
+                ->whereHas('course', function ($query) {
+                    $query->whereNotNull('id');
+                })
+                ->get();
+
+            // Paso 3: Generar el reporte
+            $reportData = $answers->where('question_id', '<', 21)
+                ->groupBy('question_id')
+                ->map(function ($group) {
+                    $calificaciones = $group->pluck('qualification')->map(fn($value) => (int)$value);
+                    return [
+                        'average' => $calificaciones->avg(),
+                        'count' => $group->count(),
+                    ];
+                });
+
+            // Paso 4: Observaciones
+            $observations = $answers->whereIn('question_id', [21, 22])
+                ->filter(fn($answer) => !is_null($answer->qualification) && $answer->qualification !== '');
+
+            // Paso 5: Preguntas
+            $questions = Question::whereIn('id', $reportData->keys())
+                ->pluck('question', 'id')
+                ->values()
+                ->toArray();
+
+            // Generar contenido HTML
+            $htmlContent = view('admin/reports/generalGrafica', [
+                'reportData' => $reportData,
+                'questions' => json_encode($questions),
+                'observations' => $observations,
+                'instructor' => $instructor
+            ])->render();
+
+            // Nombre del archivo
+            $pdfName = "reporte-instructor-{$instructorId}-" . now()->format('Y-m-d') . ".pdf";
+
+            // Generar PDF
+            // Browsershot::html($htmlContent)
+            //     ->setNodeBinary('/home/usuario1/.nvm/versions/node/v20.18.1/bin/node')
+            //     ->setNpmBinary('/home/usuario1/.nvm/versions/node/v20.18.1/bin/npm')
+            //     ->waitUntilNetworkIdle()
+            //     ->scale(1)
+            //     ->margins(1, 1, 1, 1)
+            //     ->save(public_path($pdfName));
+            Pdf::html($htmlContent)
+                ->withBrowserShot(function (Browsershot $browsershot){
+                    $browsershot
+                        ->margins(1,1,1,1,"px")
+                        ->waitUntilNetworkIdle();
+                })
+                ->save($pdfName);
+
+            // Descargar
+            return response()->download(public_path($pdfName));
+
+        } catch (\Exception $e) {
+            return back()->withErrors('No se pudo generar el PDF: ' . $e->getMessage());
+        }
+    }
 }
