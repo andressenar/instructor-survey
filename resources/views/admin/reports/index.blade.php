@@ -146,7 +146,7 @@
                     </td>
                     <td class="px-4 py-2 text-center">
                         <button>
-                            <a href="{{ route('reports.general', $instructor->id) }}"
+                            <a href="{{ route('reportsGeneral', $instructor->id) }}"
                                 class="block px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-green-700 focus:outline-none">
                                 Reporte General
                             </a>

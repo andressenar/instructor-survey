@@ -10,6 +10,8 @@ use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Spatie\Browsershot\Browsershot;
+use Spatie\LaravelPdf\Enums\Unit;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 use function Spatie\LaravelPdf\Support\pdf;
 
@@ -78,6 +80,53 @@ class ReportController extends Controller
     }
     public function showGeneral($instructorId)
     {
+        // Paso 1: Verificar que el instructor existe
+        $instructor = Instructor::find($instructorId);
+        if (!$instructor) {
+            return back()->withErrors("El instructor no existe.");
+        }
+
+        // Paso 2: Obtener todas las respuestas de las fichas asociadas al instructor
+        $answers = Answer::where('instructor_id', $instructorId)
+            ->whereHas('course', function ($query) {
+                $query->whereNotNull('id');
+            })
+            ->get();
+
+        // Paso 3: Generar el reporte agrupando por pregunta (preguntas menores a 21)
+        $reportData = $answers->where('question_id', '<', 21)
+            ->groupBy('question_id')
+            ->map(function ($group) {
+                $calificaciones = $group->pluck('qualification')->map(fn($value) => (int)$value);
+                return [
+                    'average' => $calificaciones->avg(),
+                    'count' => $group->count(),
+                ];
+            });
+
+        // Paso 4: Recoger observaciones para preguntas abiertas (ID 21 y 22)
+        $observations = $answers->whereIn('question_id', [21, 22])
+                ->filter(fn($answer) => !is_null($answer->qualification) && $answer->qualification !== '');
+;
+
+        // Paso 5: Obtener las preguntas asociadas a las respuestas
+        $questions = Question::whereIn('id', $reportData->keys())
+            ->pluck('question', 'id')
+            ->values()  // Nos aseguramos de obtener solo los valores
+            ->toArray();  // Convertimos a un array simple de JavaScript
+
+        // Paso 6: Retornar la vista del reporte con toda la información consolidada
+        return view('admin/reports/general', [
+            'reportData' => $reportData,
+            'questions' => json_encode($questions),  // Pasamos a JSON
+            'observations' => $observations,
+            'instructor' => $instructor
+        ]);
+    }
+    
+
+    public function showGeneralDownload($instructorId)
+    {
         try {
             // Paso 1: Verificar que el instructor existe
             $instructor = Instructor::find($instructorId);
@@ -114,7 +163,7 @@ class ReportController extends Controller
                 ->toArray();
 
             // Generar contenido HTML
-            $htmlContent = view('admin.reports.general', [
+            $htmlContent = view('admin/reports/generalGrafica', [
                 'reportData' => $reportData,
                 'questions' => json_encode($questions),
                 'observations' => $observations,
@@ -125,39 +174,28 @@ class ReportController extends Controller
             $pdfName = "reporte-instructor-{$instructorId}-" . now()->format('Y-m-d') . ".pdf";
 
             // Generar PDF
-            Browsershot::html($htmlContent)
-                ->setNodeBinary('/home/linuxbrew/.linuxbrew/bin/node')
-                ->setNpmBinary('/home/linuxbrew/.linuxbrew/bin/npm')
-                ->waitUntilNetworkIdle()
-                ->scale(1)
-                ->margins(10, 10, 10, 10)
-                ->save(public_path($pdfName));
+            // Browsershot::html($htmlContent)
+            //     ->setNodeBinary('/home/usuario1/.nvm/versions/node/v20.18.1/bin/node')
+            //     ->setNpmBinary('/home/usuario1/.nvm/versions/node/v20.18.1/bin/npm')
+            //     ->waitUntilNetworkIdle()
+            //     ->scale(1)
+            //     ->margins(1, 1, 1, 1)
+            //     ->save(public_path($pdfName));
+            Pdf::html($htmlContent)
+                ->withBrowserShot(function (Browsershot $browsershot){
+                    $browsershot
+                        ->margins(1,1,1,1,"px")
+                        ->waitUntilNetworkIdle();
+                })
+                ->save($pdfName);
 
             // Descargar
             return response()->download(public_path($pdfName));
 
         } catch (\Exception $e) {
-            \Log::error('Error generando PDF: ' . $e->getMessage());
             return back()->withErrors('No se pudo generar el PDF: ' . $e->getMessage());
         }
     }
 
-    public function generarPDF($instructorId)
-    {
-        $instructor = Instructor::find($instructorId);
-        $answers = Answer::where('instructor_id', $instructorId)->get();
-        $reportData = $answers->where('question_id', '<', 21)
-            ->groupBy('question_id')
-            ->map(function ($group) {
-                $calificaciones = $group->pluck('qualification')->map(fn($value) => (int)$value);
-                return [
-                    'average' => $calificaciones->avg(),
-                    'count' => $group->count(),
-                ];
-            });
-        $observations = $answers->whereIn('question_id', [21, 22]);
-        $questions = Question::whereIn('id', $reportData->keys())->pluck('question', 'id');
-
-
-    }
+   
 }
