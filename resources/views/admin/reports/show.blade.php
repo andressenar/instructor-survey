@@ -16,7 +16,7 @@
         <h3>programa:{{ $program->name }}</h3>
 
         <a target="download" href="{{route('reportsDownloadCourse', ['courseId' => $course->id, 'instructorId' => $instructor->id, 'programId' => $program->id]) }}" class="btn btn-primary">
-            Descargar Reporte General
+            Descargar Reporte Ficha
         </a>
 
         <div class="container-grafic">

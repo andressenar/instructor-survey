@@ -146,13 +146,12 @@
                     </td>
 
                     <td class="px-4 py-2 text-center">
-                        <button @if (!$instructor->hasGeneralAnswers) disabled @endif>
-                            <a href="{{ $instructor->hasGeneralAnswers ? route('reportsGeneral', $instructor->id) : '#' }}"
-                                class="px-4 py-2 rounded-lg focus:outline-none
-                            @if ($instructor->hasGeneralAnswers) bg-[#38a901] text-white hover:bg-[#38a980]
-                            @else bg-gray-400 text-white cursor-not-allowed @endif">
-                                Reporte General
-                            </a>
+                        <button 
+                            @if (!$instructor->hasGeneralAnswers) disabled @endif
+                            onclick="window.location.href='{{ $instructor->hasGeneralAnswers ? route('reportsGeneral', $instructor->id) : '#' }}'"
+                            class="px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-[#38a980] focus:outline-none
+                                @if (!$instructor->hasGeneralAnswers) bg-gray-400 text-white cursor-not-allowed @endif">
+                            Reporte General
                         </button>
                     </td>
 
