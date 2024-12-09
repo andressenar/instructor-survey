@@ -38,7 +38,9 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/{courseId}/{instructorId}/{programId}', [ReportController::class, 'show'])->name('reports.show');
     Route::post('/import', [ImportController::class, 'import'])->name('import');
-    Route::get('reports/general/{instructorId}', [ReportController::class, 'showGeneral'])->name('reports.general');
+    Route::get('reports/general/{instructorId}', [ReportController::class, 'showGeneral'])->name('reportsGeneral');
+    Route::get('reports/download/{instructorId}', [ReportController::class, 'showGeneralDownload'])->name('reportsGeneralDownload');
+
 
     Route::get('/survey/{apprenticeId}/{surveyId}', [SurveyController::class, 'showSurvey'])->name('survey.show');
     Route::post('survey/{id}/submit', [SurveyController::class, 'submitSurvey'])->name('survey.submit');
@@ -49,10 +51,6 @@ Route::fallback(function () {
     return redirect()->route('login');
 });
 
-// routes/web.php
-Route::get('/report-pdf', 'ReporteController@generarPDF');
 
-Route::get('pdf',function (){
-    return pdf()->view('admin.reports.general')->name('prueba-2023-04-10.pdf');
-});
+
 

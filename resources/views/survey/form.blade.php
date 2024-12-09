@@ -241,7 +241,7 @@
                                                 </div>
                                             @endforeach
                                         @elseif($question->type == 'text')
-                                            <input type="text" maxlength="30"
+                                            <input type="text" maxlength="100"
                                                 name="answers[{{ $instructor->id }}][{{ $question->id }}]"
                                                 id="question-{{ $question->id }}-instructor-{{ $instructor->id }}"
                                                 class="w-full h-12 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500  resize-none text-gray-700 placeholder-gray-400 text-start">

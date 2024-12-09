@@ -10,6 +10,8 @@ use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Spatie\Browsershot\Browsershot;
+use Spatie\LaravelPdf\Enums\Unit;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 use function Spatie\LaravelPdf\Support\pdf;
 
@@ -135,22 +137,5 @@ class ReportController extends Controller
         ]);
     }
 
-    public function generarPDF($instructorId)
-    {
-        $instructor = Instructor::find($instructorId);
-        $answers = Answer::where('instructor_id', $instructorId)->get();
-        $reportData = $answers->where('question_id', '<', 21)
-            ->groupBy('question_id')
-            ->map(function ($group) {
-                $calificaciones = $group->pluck('qualification')->map(fn($value) => (int)$value);
-                return [
-                    'average' => $calificaciones->avg(),
-                    'count' => $group->count(),
-                ];
-            });
-        $observations = $answers->whereIn('question_id', [21, 22]);
-        $questions = Question::whereIn('id', $reportData->keys())->pluck('question', 'id');
-
-
-    }
+   
 }

@@ -4,85 +4,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Reporte General - Instructor</title>
-    <link rel="stylesheet" href="{{ asset('/css/show.css') }}">
+    <style>
+        @page {
+            size: A4;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .header {
+    text-align: center;
+    color: #28a745;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #28a745; /* Estilo de borde */
+    padding-bottom: 10px;
+    border-top: 3px solid #28a745;  /* Si deseas un borde superior también */
+}
+
+
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        h2, h3 {
+            color: #28a745;
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .instructor-info {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+
+        .chart-section {
+    margin-bottom: 50px;
+    border: 2px solid #f4f4f4;  /* Borde en color verde */
+    border-radius: 8px;  /* Borde redondeado */
+    padding: 15px;  /* Espacio interno */
+}
+
+        .chart-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .observations-section ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    border-left: 4px solid #28a745;  /* Línea de borde a la izquierda */
+    padding-left: 25px; /* Aumentar el espacio después del borde */
+}
+
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
 </head>
 
 <body>
-
+    <!-- Primera Hoja -->
     <div class="container">
-        <h2>REPORTE GENERAL DE SATISFACCIÓN DEL APRENDIZ EN ETAPA LECTIVA – EJECUCIÓN DE LA FORMACIÓN.</h2>
-        <h3>Instructor: {{ $instructor->name }} {{$instructor->last_name}} {{$instructor->second_last_name}}</h3>
-        <a target="download" href="{{ route('reportsGeneralDownload', $instructor->id) }}" class="btn btn-primary">
-            Descargar Reporte General
-        </a>
+        <div class="header">
+            <h2>REPORTE GENERAL DE SATISFACCIÓN DEL APRENDIZ EN ETAPA LECTIVA – EJECUCIÓN DE LA FORMACIÓN.</h2>
+        </div>
+        <br><br>
 
+        <div class="instructor-info">
+            <h3>Instructor: {{ $instructor->name }} {{$instructor->last_name}} {{$instructor->second_last_name}}</h3>
+        </div>
+        <br><br>
 
-        <div class="container-grafic">
+        <div class="charts-container">
             <div class="chart-section" id="chart1">
                 <h2>1. Integralidad del Instructor</h2>
             </div>
+            <br><br><br><br>
             <div class="chart-section" id="chart2">
                 <h2>2. Planeación del Procedimiento de Ejecución de la Formación</h2>
             </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Segunda Hoja -->
+    <div class="container">
+        <div class="charts-container">
             <div class="chart-section" id="chart3">
                 <h2>3. Ejecución de la Formación Personal</h2>
             </div>
+            <br><br><br><br>
             <div class="chart-section" id="chart4">
                 <h2>4. Evaluación General</h2>
             </div>
-            <div class="chart-section"
-                style="padding: 20px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                <h2 style="text-align: center; color: #28a745;">5. Observaciones y Recomendaciones</h2>
-
-                <div style="display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
-    <!-- Observaciones -->
-    <div
-        style="width: 48%; max-width: 100%; background-color: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); overflow: hidden; box-sizing: border-box;">
-        <h3 style="color: #28a745; border-bottom: 2px solid #28a745; padding-bottom: 8px; word-wrap: break-word;">
-            Observaciones
-        </h3>
-        <ul style="list-style: none; padding: 0; margin: 0;">
-            @foreach ($observations->filter(fn($answer) => $answer->question_id == 21) as $observation)
-            <li
-                style="background-color: #e9fbe8; padding: 10px; margin-bottom: 8px; border-radius: 5px; word-wrap: break-word;">
-                {{ $observation->qualification }}
-            </li>
-            @endforeach
-        </ul>
+        </div>
     </div>
+
+    <div class="page-break"></div>
+
+    <!-- Observaciones -->
+    <div class="container">
+        <h2 style="text-align: center;">5. Observaciones</h2>
+        <div class="observations-section">
+            <ul>
+                @foreach ($observations->filter(fn($answer) => $answer->question_id == 21) as $observation)
+                    <li>{{ $observation->qualification }}</li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
 
     <!-- Recomendaciones -->
-    <div
-        style="width: 48%; max-width: 100%; background-color: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); overflow: hidden; box-sizing: border-box;">
-        <h3 style="color: #28a745; border-bottom: 2px solid #28a745; padding-bottom: 8px; word-wrap: break-word;">
-            Recomendaciones
-        </h3>
-        <ul style="list-style: none; padding: 0; margin: 0;">
-            @foreach ($observations->filter(fn($answer) => $answer->question_id == 22) as $recommendation)
-            <li
-                style="background-color: #e9fbe8; padding: 10px; margin-bottom: 8px; border-radius: 5px; word-wrap: break-word;">
-                {{ $recommendation->qualification }}
-            </li>
-            @endforeach
-        </ul>
-    </div>
-</div>
-            </div>
+    <div class="container">
+        <h2 style="text-align: center;">6. Recomendaciones</h2>
+        <div class="observations-section">
+            <ul>
+                @foreach ($observations->filter(fn($answer) => $answer->question_id == 22) as $recommendation)
+                    <li>{{ $recommendation->qualification }}</li>
+                @endforeach
+            </ul>
         </div>
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
     <script>
-        const {
-            jsPDF
-        } = window.jspdf;
-        // Función para dividir el texto en varias líneas
         function splitText(text, maxLength) {
             const words = text.split(' '); // Dividimos el texto en palabras
             let lines = [];
@@ -105,15 +167,10 @@
 
             return lines;
         }
-
         document.addEventListener('DOMContentLoaded', function() {
-            const reportData = @json($reportData -> pluck('average') -> values());
+            const reportData = @json($reportData->pluck('average')->values());
             const questions = JSON.parse(@json($questions)); // Convertimos JSON en un array
 
-            // Comprobación para asegurarnos que questions es un array
-            if (!Array.isArray(questions)) {
-                console.error("La variable 'questions' no es un array:", questions);
-            }
 
             const distribution = [6, 4, 6, 4]; // Cantidad de preguntas por gráfica
             let startIndex = 0;
@@ -121,7 +178,7 @@
             distribution.forEach((count, index) => {
                 const chunkData = reportData.slice(startIndex, startIndex + count);
                 const chunkCategories = questions
-                    .slice(startIndex, startIndex + count) // Usamos slice aquí
+                    .slice(startIndex, startIndex + count)
                     .map((q) => splitText(q, 23)); // Dividir el texto en líneas aquí
 
                 startIndex += count;
@@ -129,7 +186,8 @@
                 const options = {
                     chart: {
                         type: 'bar',
-                        height: 400,
+                        height: '400',
+                        width: '1250', // Hacer que la gráfica ocupe el 100% del contenedor
                         toolbar: {
                             show: false,
                         },
@@ -142,9 +200,11 @@
                         categories: chunkCategories,
                         labels: {
                             style: {
-                                fontSize: '11px',
+                                fontSize: '14px',
                                 fontWeight: '',
+                                whiteSpace: 'pre-line', // Importante para manejar saltos de línea
                             },
+                            rotate: 0
                         },
                     },
                     yaxis: {
@@ -188,7 +248,6 @@
             });
         });
     </script>
-
 
 </body>
 
