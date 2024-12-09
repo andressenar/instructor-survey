@@ -79,9 +79,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-        const {
-            jsPDF
-        } = window.jspdf;
+        
         // Función para dividir el texto en varias líneas
         function splitText(text, maxLength) {
             const words = text.split(' '); // Dividimos el texto en palabras

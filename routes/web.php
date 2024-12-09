@@ -37,6 +37,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/{courseId}/{instructorId}/{programId}', [ReportController::class, 'show'])->name('reports.show');
+    Route::get('/reports/downloadcourse/{courseId}/{instructorId}/{programId}', [ReportController::class, 'reportsDownloadCourse'])->name('reportsDownloadCourse');
     Route::post('/import', [ImportController::class, 'import'])->name('import');
     Route::get('reports/general/{instructorId}', [ReportController::class, 'showGeneral'])->name('reportsGeneral');
     Route::get('reports/download/{instructorId}', [ReportController::class, 'showGeneralDownload'])->name('reportsGeneralDownload');
