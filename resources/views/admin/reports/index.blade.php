@@ -205,7 +205,7 @@
         }
 
         $(document).ready(function() {
-            $('#reportTable').DataTable({
+            const table = $('#reportTable').DataTable({
                 language: {
                     url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
                 },
@@ -214,16 +214,64 @@
                 ordering: true,
                 info: true,
                 searchDelay: 200,
-                initComplete: function(settings, json) {
-                    const table = this.api();
-                    $.fn.DataTable.ext.type.search.string = function(data) {
-                        return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                            .toLowerCase();
-                    };
-                    table.draw();
-                }
+                responsive: true, // 📱 1️⃣ Asegura la adaptabilidad en dispositivos móviles
+                autoWidth: false, // 📐 2️⃣ Evita el ajuste automático de ancho de columnas
+                
+                // 🔍 3️⃣ Personalización de la búsqueda en las celdas
+                columnDefs: [
+                    {
+                        targets: '_all',
+                        render: function(data, type, row) {
+                            if (type === 'filter' || type === 'search') {
+                                // Normaliza el texto para la búsqueda eliminando los acentos
+                                return typeof data === 'string' 
+                                    ? data.normalize("NFD").replace(/[̀-ͯ]/g, "") 
+                                    : data;
+                            }
+                            return data; // Muestra el texto original (respetando mayúsculas/minúsculas y tildes)
+                        }
+                    }
+                ]
+            });
+
+            // 🔍 4️⃣ Normalizar la entrada de búsqueda del usuario
+            const searchInput = $('#reportTable_filter input');
+            
+            // Usa debounce para optimizar la cantidad de búsquedas
+            let debounceTimer;
+            searchInput.on('input', function() {
+                clearTimeout(debounceTimer);
+                
+                // Obtiene tanto el valor con tildes como sin tildes
+                const valorBusqueda = $(this).val();
+                const valorBusquedaNormalizado = valorBusqueda.normalize("NFD").replace(/[̀-ͯ]/g, "");
+                
+                debounceTimer = setTimeout(() => {
+                    const regex = valorBusquedaNormalizado.split('').map(char => {
+                        if (/[a-zA-Z]/.test(char)) {
+                            const accents = {
+                                'a': '[aáÁ]',
+                                'e': '[eéÉ]',
+                                'i': '[iíÍ]',
+                                'o': '[oóÓ]',
+                                'u': '[uúÚ]',
+                                'A': '[AÁ]',
+                                'E': '[EÉ]',
+                                'I': '[IÍ]',
+                                'O': '[OÓ]',
+                                'U': '[UÚ]'
+                            };
+                            return accents[char] || char;
+                        } else {
+                            return char;
+                        }
+                    }).join('');
+                    
+                    table.search(regex, true, false).draw(); // Realiza la búsqueda con la opción de expresión regular
+                }, 300); // 🕒 5️⃣ Retardo de 300ms para reducir la frecuencia de búsqueda
             });
         });
+
 
         // Abre y cierra el modal de carga masiva
         document.getElementById('open-modal').addEventListener('click', function() {
