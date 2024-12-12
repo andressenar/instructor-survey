@@ -136,63 +136,67 @@
             </thead>
             <tbody>
                 @foreach ($instructors as $instructor)
-                <tr class="border-b">
-                    <td class="px-4 py-2">{{ $instructor->name }} {{ $instructor->last_name}} {{$instructor->second_last_name}}</td>
-                    <td class="px-4 py-2 text-center">
-                        <button onclick="openModal({{ $instructor->id }})"
-                            class="px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-[#38a980] focus:outline-none">
-                            Ver Fichas Asociadas
-                        </button>
-                    </td>
+                    <tr class="border-b">
+                        <td class="px-4 py-2">{{ $instructor->name }} {{ $instructor->last_name }}
+                            {{ $instructor->second_last_name }}</td>
+                        <td class="px-4 py-2 text-center">
+                            <button onclick="openModal({{ $instructor->id }})"
+                                class="px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-[#38a980] focus:outline-none">
+                                Ver Fichas Asociadas
+                            </button>
+                        </td>
 
-                    <td class="px-4 py-2 text-center">
-                        <button @if (!$instructor->hasGeneralAnswers) disabled @endif>
-                            <a href="{{ $instructor->hasGeneralAnswers ? route('reportsGeneral', $instructor->id) : '#' }}"
-                                class="px-4 py-2 rounded-lg focus:outline-none
+                        <td class="px-4 py-2 text-center">
+                            <button @if (!$instructor->hasGeneralAnswers) disabled @endif>
+                                <a href="{{ $instructor->hasGeneralAnswers ? route('reportsGeneral', $instructor->id) : '#' }}"
+                                    class="px-4 py-2 rounded-lg focus:outline-none
                             @if ($instructor->hasGeneralAnswers) bg-[#38a901] text-white hover:bg-[#38a980]
                             @else bg-gray-400 text-white cursor-not-allowed @endif">
-                                Reporte General
-                            </a>
-                        </button>
-                    </td>
+                                    Reporte General
+                                </a>
+                            </button>
+                        </td>
 
-                </tr>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
 
         <!-- Modales para Fichas -->
         @foreach ($instructors as $instructor)
-        <div id="modal-{{ $instructor->id }}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Fichas Asociadas a {{ $instructor->name }} {{ $instructor->last_name}} {{$instructor->second_last_name}}</h2>
+            <div id="modal-{{ $instructor->id }}"
+                class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Fichas Asociadas a {{ $instructor->name }}
+                        {{ $instructor->last_name }} {{ $instructor->second_last_name }}</h2>
 
-                <div class="space-y-2">
-                    @foreach ($instructor->courses as $course)
-                        @if ($course->hasAnswers)
-                            <button>
-                                <a href="{{ route('reports.show', ['courseId' => $course->id, 'instructorId' => $instructor->id, 'programId' => $course->program->id]) }}"
-                                    class="block px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-green-700 focus:outline-none">
-                                    {{ $course->code }}
-                                </a>
-                            </button>
-                        @else
-                            <button disabled>
-                                <a class="block px-4 py-2 bg-gray-400 text-white rounded-lg focus:outline-none cursor-not-allowed">
-                                    {{ $course->code }}
-                                </a>
-                            </button>
-                        @endif
-                    @endforeach
+                    <div class="space-y-2">
+                        @foreach ($instructor->courses as $course)
+                            @if ($course->hasAnswers)
+                                <button>
+                                    <a href="{{ route('reports.show', ['courseId' => $course->id, 'instructorId' => $instructor->id, 'programId' => $course->program->id]) }}"
+                                        class="block px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-green-700 focus:outline-none">
+                                        {{ $course->code }}
+                                    </a>
+                                </button>
+                            @else
+                                <button disabled>
+                                    <a
+                                        class="block px-4 py-2 bg-gray-400 text-white rounded-lg focus:outline-none cursor-not-allowed">
+                                        {{ $course->code }}
+                                    </a>
+                                </button>
+                            @endif
+                        @endforeach
+                    </div>
+
+
+                    <button onclick="closeModal({{ $instructor->id }})"
+                        class="mt-4 w-full py-2 px-4 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                        Cerrar
+                    </button>
                 </div>
-                
-
-                <button onclick="closeModal({{ $instructor->id }})"
-                    class="mt-4 w-full py-2 px-4 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                    Cerrar
-                </button>
             </div>
-        </div>
         @endforeach
     </div>
     <script>
@@ -207,68 +211,39 @@
         $(document).ready(function() {
             const table = $('#reportTable').DataTable({
                 language: {
-                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                    url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
                 },
                 paging: true,
                 searching: true,
                 ordering: true,
                 info: true,
                 searchDelay: 200,
-                responsive: true, // 📱 1️⃣ Asegura la adaptabilidad en dispositivos móviles
-                autoWidth: false, // 📐 2️⃣ Evita el ajuste automático de ancho de columnas
+                responsive: true,
+                autoWidth: false,
                 
-                // 🔍 3️⃣ Personalización de la búsqueda en las celdas
-                columnDefs: [
-                    {
-                        targets: '_all',
-                        render: function(data, type, row) {
-                            if (type === 'filter' || type === 'search') {
-                                // Normaliza el texto para la búsqueda eliminando los acentos
-                                return typeof data === 'string' 
-                                    ? data.normalize("NFD").replace(/[̀-ͯ]/g, "") 
-                                    : data;
-                            }
-                            return data; // Muestra el texto original (respetando mayúsculas/minúsculas y tildes)
-                        }
-                    }
-                ]
-            });
+                initComplete: function(settings, json) {
+                    const table = this.api();
 
-            // 🔍 4️⃣ Normalizar la entrada de búsqueda del usuario
-            const searchInput = $('#reportTable_filter input');
-            
-            // Usa debounce para optimizar la cantidad de búsquedas
-            let debounceTimer;
-            searchInput.on('input', function() {
-                clearTimeout(debounceTimer);
-                
-                // Obtiene tanto el valor con tildes como sin tildes
-                const valorBusqueda = $(this).val();
-                const valorBusquedaNormalizado = valorBusqueda.normalize("NFD").replace(/[̀-ͯ]/g, "");
-                
-                debounceTimer = setTimeout(() => {
-                    const regex = valorBusquedaNormalizado.split('').map(char => {
-                        if (/[a-zA-Z]/.test(char)) {
-                            const accents = {
-                                'a': '[aáÁ]',
-                                'e': '[eéÉ]',
-                                'i': '[iíÍ]',
-                                'o': '[oóÓ]',
-                                'u': '[uúÚ]',
-                                'A': '[AÁ]',
-                                'E': '[EÉ]',
-                                'I': '[IÍ]',
-                                'O': '[OÓ]',
-                                'U': '[UÚ]'
-                            };
-                            return accents[char] || char;
-                        } else {
-                            return char;
+                    // Extender la lógica de búsqueda para permitir "ñ" y "Ñ"
+                    $.fn.DataTable.ext.type.search.string = function(data) {
+                        return !data ? '' : data
+                            .normalize("NFD") // Descompone los caracteres latinos con diacríticos
+                            .replace(/[̀-ͯ]/g, "") // Elimina los diacríticos
+                            .toLowerCase(); // Convierte todo a minúsculas
+                    };
+
+                    // Validar y bloquear caracteres especiales y tildes en la búsqueda, pero permitir "ñ" y "Ñ"
+                    $('#reportTable_filter input').on('input', function() {
+                        const invalidCharsPattern = /[^a-zA-Z0-9ñÑ\s]/g; // Bloquear caracteres especiales excepto letras, números, espacios y ñ/Ñ
+                        const inputValue = $(this).val();
+                        if (invalidCharsPattern.test(inputValue)) {
+                            alert('No se permiten caracteres especiales en la búsqueda. Los caracteres bloqueados incluyen símbolos como @, #, $, %, &, *, etc. Solo se permiten letras, números, espacios y la "ñ".');
+                            $(this).val(inputValue.replace(invalidCharsPattern, ''));
                         }
-                    }).join('');
-                    
-                    table.search(regex, true, false).draw(); // Realiza la búsqueda con la opción de expresión regular
-                }, 300); // 🕒 5️⃣ Retardo de 300ms para reducir la frecuencia de búsqueda
+                    });
+
+                    table.draw();
+                }
             });
         });
 
