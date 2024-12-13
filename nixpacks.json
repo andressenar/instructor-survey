@@ -1,0 +1,36 @@
+{
+    "phases": {
+      "install": {
+        "nixPkgs": [
+          "libnss",
+          "atk",
+          "gtk3",
+          "nspr",
+          "alsa-lib"
+        ],
+        "cmds": [
+          "composer require spatie/browsershot",
+          "composer require spatie/laravel-pdf",
+          "composer install",
+          "npm install"
+        ]
+      },
+      "build": {
+        "cmds": [
+          "npm run build --production"
+        ]
+      },
+      "start": {
+        "cmds": [
+          "php artisan storage:link",
+          "php artisan optimize:clear",
+          "php artisan config:cache",
+          "php artisan route:cache",
+          "php artisan view:clear",
+          "php artisan migrate --force",
+          "php artisan serve --host=0.0.0.0 --port=8000"
+        ]
+      }
+    }
+  }
+  
