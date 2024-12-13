@@ -33,13 +33,13 @@
 
                     <!-- Documento de Identidad -->
                     <div>
-                        <label for="documento" class="block text-sm font-medium text-gray-600">Documento de Identidad</label>
+                        <label id="identity_document" for="documento" class="block text-sm font-medium text-gray-600">Documento de Identidad</label>
                         <input type="number" id="identity_document" name="identity_document" placeholder="Ingresa tu documento" class="block w-full px-4 py-2 mt-1 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none" required>
                     </div>
 
                     <!-- Ficha -->
                     <div>
-                        <label for="ficha" class="block text-sm font-medium text-gray-600">Ficha</label>
+                        <label id="course_code" for="ficha" class="block text-sm font-medium text-gray-600">Ficha</label>
                         <input type="number" id="course_code" name="course_code" placeholder="Ingresa tu ficha" class="block w-full px-4 py-2 mt-1 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none" required>
                     </div>
 
