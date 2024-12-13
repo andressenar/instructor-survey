@@ -234,10 +234,10 @@
 
                     // Validar y bloquear caracteres especiales y tildes en la búsqueda, pero permitir "ñ" y "Ñ"
                     $('#reportTable_filter input').on('input', function() {
-                        const invalidCharsPattern = /[^a-zA-Z0-9ñÑ\s]/g; // Bloquear caracteres especiales excepto letras, números, espacios y ñ/Ñ
+                        const invalidCharsPattern = /[^a-zA-ZñÑ\s]/g; // Bloquear caracteres especiales excepto letras, números, espacios y ñ/Ñ
                         const inputValue = $(this).val();
                         if (invalidCharsPattern.test(inputValue)) {
-                            alert('No se permiten caracteres especiales en la búsqueda. Los caracteres bloqueados incluyen símbolos como @, #, $, %, &, *, etc. Solo se permiten letras, números, espacios y la "ñ".');
+                            alert('Para garantizar la precisión de los resultados, no se permite el uso de caracteres especiales en la búsqueda. Esto incluye símbolos como @, #, $, %, &, *, entre otros. Únicamente se aceptan letras, la letra "ñ" y espacios. Por favor, asegúrese de seguir estas directrices al realizar su búsqueda.');
                             $(this).val(inputValue.replace(invalidCharsPattern, ''));
                         }
                     });
