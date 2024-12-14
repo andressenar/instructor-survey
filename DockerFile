@@ -1,0 +1,35 @@
+# Use an official Node.js runtime as a parent image
+FROM node:18-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Install necessary dependencies for Chromium
+RUN apt-get update && apt-get install -y \
+    wget \
+    ca-certificates \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libgbm-dev \
+    libnspr4 \
+    libnss3 \
+    libx11-xcb1 \
+    xdg-utils \
+    chromium
+
+# Set the environment variable to specify the path to the installed Chromium
+ENV CHROMIUM_PATH=/usr/bin/chromium
+
+# Install dependencies for the application
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the application files
+COPY . .
+
+# Expose port for the app
+EXPOSE 3000
+
+# Start the app
+CMD ["npm", "start"]
