@@ -1,0 +1,12 @@
+[phases.install]
+# Instalar Puppeteer con las dependencias requeridas
+commands = [
+  "apt-get update",
+  "apt-get install -y chromium fonts-liberation libnss3 libxss1 libasound2 libatk1.0-0 libatk-bridge2.0-0 libdrm2 libxkbcommon0 xdg-utils"
+]
+
+[phases.setup]
+commands = ["npm install"] # Asegúrate de instalar Puppeteer o puppeteer-core aquí
+
+[variables]
+PUPPETEER_EXECUTABLE_PATH = "/usr/bin/chromium" # Puppeteer usará este binario
