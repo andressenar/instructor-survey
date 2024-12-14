@@ -10,7 +10,7 @@ commands = [
     "libatk-bridge2.0-0",
     "libdrm2",
     "libxkbcommon0",
-    "xdg-utils""
+    "xdg-utils"
 ]
 
 [phases.setup]
