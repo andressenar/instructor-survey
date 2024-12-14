@@ -1,20 +1,13 @@
-[phases.install]
-# Instalar Puppeteer con las dependencias requeridas
-commands = [
-  "chromium-browser",
-    "fonts-liberation",
-    "libnss3",
-    "libxss1",
-    "libasound2",
-    "libatk1.0-0",
-    "libatk-bridge2.0-0",
-    "libdrm2",
-    "libxkbcommon0",
-    "xdg-utils"
-]
+# nixpacks.toml
+[build]
+  # Comando para instalar las dependencias necesarias
+  build_cmd = """
+    apt-get update && \
+    apt-get install -y chromium fonts-liberation libnss3 libxss1 libasound2 libatk1.0-0 libatk-bridge2.0-0 libdrm2 libxkbcommon0 xdg-utils && \
+    composer install --no-dev --optimize-autoloader && \
+    npm install puppeteer --location=global
+  """
 
-[phases.setup]
-commands = ["npm install"] # Asegúrate de instalar Puppeteer o puppeteer-core aquí
-
-[variables]
-PUPPETEER_EXECUTABLE_PATH = "/usr/bin/chromium" # Puppeteer usará este binario
+[env]
+  # Otras configuraciones del entorno si es necesario
+  CHROME_BIN = "/usr/bin/chromium"  # Especifica la ubicación de Chromium
