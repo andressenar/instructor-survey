@@ -150,22 +150,18 @@ class ReportController extends Controller
                 'course' => $course,
                 'program' => Program::find($programId),
             ]);
+            $browserWsEndpoint = env('BROWSER_WS_ENDPOINT');
 
             $pdfName = "reporte-instructor-{$instructorId}-{$courseId}" . now()->format('Y-m-d') . ".pdf";
 
-            Pdf::html($htmlContent)
-                ->withBrowserShot(function (Browsershot $browsershot) {
-                    $browsershot
-                        //PRUBA
-                        ->margins(1, 1, 1, 1, "px")
-                        ->waitUntilNetworkIdle()
-                        // Configuración para Puppeteer en Railway
-                        ->setOption('args', ['--no-sandbox', '--disable-setuid-sandbox']) // Evitar problemas de permisos
-                        ->setOption('ignoreDefaultArgs', ['--disable-extensions']) // Evitar conflictos de extensiones
-                        ->setOption('executablePath', '')
-                        ->headless();
-                })
-                ->save($pdfName);
+            // Usando Browsershot para generar un PDF y conectarse a Browserless
+            Browsershot::url('http://example.com') // URL de la página que quieres convertir
+                ->setOption('args', ['--no-sandbox', '--disable-setuid-sandbox']) // Otras opciones necesarias
+                ->setOption('ignoreDefaultArgs', ['--disable-extensions'])
+                ->setOption('executablePath', $browserWsEndpoint) // Aquí configuras el WebSocket del servicio
+                ->margins(1, 1, 1, 1, "px")
+                ->waitUntilNetworkIdle()
+                ->save(public_path($pdfName));
 
             // Descargar
             return response()->download(public_path($pdfName));
@@ -274,7 +270,7 @@ class ReportController extends Controller
                     $browsershot
                         ->margins(1, 1, 1, 1, "px")
                         ->waitUntilNetworkIdle()
-                          // Configuración para Puppeteer en Railway
+                        // Configuración para Puppeteer en Railway
                         ->setOption('args', ['--no-sandbox', '--disable-setuid-sandbox']) // Evitar problemas de permisos
                         ->setOption('ignoreDefaultArgs', ['--disable-extensions']) // Evitar conflictos de extensiones
                         ->setOption('executablePath', '')
