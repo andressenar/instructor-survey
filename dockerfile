@@ -19,9 +19,6 @@ WORKDIR /app
 # Instala dependencias de PHP y Node (si es necesario)
 
 
-RUN npm install puppeteer
-RUN composer require spatie/browsershot
- 
 
 # Expone el puerto si es necesario (opcional, ya que Railway maneja esto automáticamente)
 EXPOSE 8080
