@@ -5,6 +5,7 @@ FROM php:8.3-fpm
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
+    chromium \
     libfreetype6-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd 
@@ -18,9 +19,9 @@ WORKDIR /app
 # Instala dependencias de PHP y Node (si es necesario)
 
 
-RUN npm install puppeteer --location=global
+RUN npm install puppeteer
 RUN composer require spatie/browsershot
-
+ 
 
 # Expone el puerto si es necesario (opcional, ya que Railway maneja esto automáticamente)
 EXPOSE 8080
