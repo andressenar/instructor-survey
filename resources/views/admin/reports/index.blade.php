@@ -70,11 +70,19 @@
             margin-top: 10px;
             color: #666;
         }
+
+        /* Estilo para el mensaje de advertencia */
+        .warning-message {
+            width: 50%;
+            color: #ff9900;
+            font-size: 0.875rem;
+            margin-top: 5px;
+            display: none;
+        }
     </style>
 </head>
 
 <body class="font-sans bg-gray-100">
-
     <header class="bg-white text-gray-800 border-b border-gray-300 p-4 shadow-lg">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex justify-center">
@@ -90,34 +98,15 @@
             </div>
         </div>
     </header>
-
-    <div class="container mx-auto mt-6 px-4">
-
-
-        <!-- Modal -->
-        <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Subir Archivo Excel</h2>
-                <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                    @csrf
-                    <div class="space-y-2">
-                        <label for="file" class="block font-medium text-gray-700">Selecciona el archivo
-                            Excel</label>
-                        <input type="file" name="file" id="file" required
-                            class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-gray-900 focus:outline-none focus:ring-green-500 focus:border-green-500">
-                    </div>
-                    <button type="submit"
-                        class="w-full py-2 px-4 bg-[#38a901] text-white font-medium rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-                        Importar Excel
-                    </button>
-                </form>
-                <button id="close-modal"
-                    class="mt-4 w-full py-2 px-4 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                    Cancelar
-                </button>
-            </div>
+    <!-- Mensaje de advertencia para caracteres inválidos -->
+    <div id="warningMessage" class="warning-message">
+            Para garantizar la precisión de los resultados, no se permite el uso de caracteres especiales en la búsqueda. Esto incluye símbolos como @, #, $, %, &, *, entre otros. Únicamente se aceptan letras, la letra "ñ" y espacios. Por favor, asegúrese de seguir estas directrices al realizar su búsqueda.
         </div>
 
+    <div class="container mx-auto mt-6 px-4">
+    <div id="warningMessage" class="warning-message">
+            Para garantizar la precisión de los resultados, no se permite el uso de caracteres especiales en la búsqueda. Esto incluye símbolos como @, #, $, %, &, *, entre otros. Únicamente se aceptan letras, la letra "ñ" y espacios. Por favor, asegúrese de seguir estas directrices al realizar su búsqueda.
+        </div>
         <!-- Tabla de Reportes -->
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">Reporte de Instructores</h2>
@@ -148,7 +137,7 @@
 
                         <td class="px-4 py-2 text-center">
                             <button @if (!$instructor->hasGeneralAnswers) disabled @endif>
-                                <a href="{{ $instructor->hasGeneralAnswers ? route('reportsGeneral', $instructor->id) : '#' }}"
+                                <a href="{{ $instructor->hasGeneralAnswers ? route('reportsGeneral', $instructor->id) : '#' }} "
                                     class="px-4 py-2 rounded-lg focus:outline-none
                             @if ($instructor->hasGeneralAnswers) bg-[#38a901] text-white hover:bg-[#38a980]
                             @else bg-gray-400 text-white cursor-not-allowed @endif">
@@ -162,52 +151,10 @@
             </tbody>
         </table>
 
-        <!-- Modales para Fichas -->
-        @foreach ($instructors as $instructor)
-            <div id="modal-{{ $instructor->id }}"
-                class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Fichas Asociadas a {{ $instructor->name }}
-                        {{ $instructor->last_name }} {{ $instructor->second_last_name }}</h2>
-
-                    <div class="space-y-2">
-                        @foreach ($instructor->courses as $course)
-                            @if ($course->hasAnswers)
-                                <button>
-                                    <a href="{{ route('reports.show', ['courseId' => $course->id, 'instructorId' => $instructor->id, 'programId' => $course->program->id]) }}"
-                                        class="block px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-green-700 focus:outline-none">
-                                        {{ $course->code }}
-                                    </a>
-                                </button>
-                            @else
-                                <button disabled>
-                                    <a
-                                        class="block px-4 py-2 bg-gray-400 text-white rounded-lg focus:outline-none cursor-not-allowed">
-                                        {{ $course->code }}
-                                    </a>
-                                </button>
-                            @endif
-                        @endforeach
-                    </div>
-
-
-                    <button onclick="closeModal({{ $instructor->id }})"
-                        class="mt-4 w-full py-2 px-4 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                        Cerrar
-                    </button>
-                </div>
-            </div>
-        @endforeach
+        
     </div>
+
     <script>
-        function openModal(id) {
-            document.getElementById(`modal-${id}`).style.display = 'flex';
-        }
-
-        function closeModal(id) {
-            document.getElementById(`modal-${id}`).style.display = 'none';
-        }
-
         $(document).ready(function() {
             const table = $('#reportTable').DataTable({
                 language: {
@@ -220,7 +167,7 @@
                 searchDelay: 200,
                 responsive: true,
                 autoWidth: false,
-                
+
                 initComplete: function(settings, json) {
                     const table = this.api();
 
@@ -232,29 +179,23 @@
                             .toLowerCase(); // Convierte todo a minúsculas
                     };
 
-                    // Validar y bloquear caracteres especiales y tildes en la búsqueda, pero permitir "ñ" y "Ñ"
+                    // Validar caracteres especiales
                     $('#reportTable_filter input').on('input', function() {
                         const invalidCharsPattern = /[^a-zA-ZñÑ\s]/g; // Bloquear caracteres especiales excepto letras, números, espacios y ñ/Ñ
                         const inputValue = $(this).val();
+
+                        // Verificar si el patrón contiene caracteres inválidos
                         if (invalidCharsPattern.test(inputValue)) {
-                            alert('Para garantizar la precisión de los resultados, no se permite el uso de caracteres especiales en la búsqueda. Esto incluye símbolos como @, #, $, %, &, *, entre otros. Únicamente se aceptan letras, la letra "ñ" y espacios. Por favor, asegúrese de seguir estas directrices al realizar su búsqueda.');
-                            $(this).val(inputValue.replace(invalidCharsPattern, ''));
+                            $('#warningMessage').show();  // Muestra el mensaje de advertencia
+                            $(this).val(inputValue.replace(invalidCharsPattern, '')); // Elimina los caracteres inválidos
+                        } else {
+                            $('#warningMessage').hide();  // Oculta el mensaje de advertencia si no hay caracteres inválidos
                         }
                     });
 
                     table.draw();
                 }
             });
-        });
-
-
-        // Abre y cierra el modal de carga masiva
-        document.getElementById('open-modal').addEventListener('click', function() {
-            document.getElementById('modal').classList.remove('hidden');
-        });
-
-        document.getElementById('close-modal').addEventListener('click', function() {
-            document.getElementById('modal').classList.add('hidden');
         });
     </script>
 
