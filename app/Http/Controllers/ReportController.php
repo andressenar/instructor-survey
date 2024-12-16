@@ -156,7 +156,7 @@ class ReportController extends Controller
         Pdf::html($htmlContent)
                 ->withBrowserShot(function (Browsershot $browsershot){
                     $browsershot
-                        ->setChromePath('/app/.cache/puppeteer/chrome/linux-131.0.6778.108/chrome-linux64/chrome')
+                    //PRUBA
                         ->margins(1,1,1,1,"px")
                         ->waitUntilNetworkIdle();
                 })
@@ -270,7 +270,6 @@ class ReportController extends Controller
         $pdf = Pdf::html($htmlContent)
             ->withBrowserShot(function (Browsershot $browsershot) {
                 $browsershot
-                    ->setChromePath('/app/.cache/puppeteer/chrome/linux-131.0.6778.108/chrome-linux64/chrome')
                     ->margins(1, 1, 1, 1, "px")
                     ->waitUntilNetworkIdle();
             });
