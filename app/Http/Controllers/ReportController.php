@@ -162,6 +162,7 @@ class ReportController extends Controller
                         // Configuración para Puppeteer en Railway
                         ->setOption('args', ['--no-sandbox', '--disable-setuid-sandbox']) // Evitar problemas de permisos
                         ->setOption('ignoreDefaultArgs', ['--disable-extensions']) // Evitar conflictos de extensiones
+                        ->setOption('executablePath', '')
                         ->headless();
                 })
                 ->save($pdfName);
@@ -276,6 +277,7 @@ class ReportController extends Controller
                           // Configuración para Puppeteer en Railway
                         ->setOption('args', ['--no-sandbox', '--disable-setuid-sandbox']) // Evitar problemas de permisos
                         ->setOption('ignoreDefaultArgs', ['--disable-extensions']) // Evitar conflictos de extensiones
+                        ->setOption('executablePath', '')
                         ->headless();
                 });
 
