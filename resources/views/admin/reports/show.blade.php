@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<style>
+        .btn-custom {
+    background-color: #007bff; /* Customize the background color */
+    border-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+.btn-custom:hover {
+    background-color: #0062cc;
+    border-color: #0062cc;
+}
+    </style>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +33,7 @@
         <h3>Instructor: {{ $instructor->name }} {{$instructor->last_name}} {{$instructor->second_last_name}}</h3>
         <h3>programa:{{ $program->name }}</h3>
 
-        <a target="download" href="{{route('reportsDownloadCourse', ['courseId' => $course->id, 'instructorId' => $instructor->id, 'programId' => $program->id]) }}" class="btn btn-primary">
+        <a target="_blank" href="{{route('reportsDownloadCourse', ['courseId' => $course->id, 'instructorId' => $instructor->id, 'programId' => $program->id]) }}" class="btn btn-primary btn-custom">
             Descargar Reporte Ficha
         </a>
 

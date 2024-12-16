@@ -1,5 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+    <style>
+        .btn-custom {
+    background-color: #007bff; /* Customize the background color */
+    border-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+.btn-custom:hover {
+    background-color: #0062cc;
+    border-color: #0062cc;
+}
+    </style>
 
 <head>
     <meta charset="UTF-8">
@@ -14,9 +31,11 @@
     <div class="container">
         <h2>REPORTE GENERAL DE SATISFACCIÓN DEL APRENDIZ EN ETAPA LECTIVA – EJECUCIÓN DE LA FORMACIÓN.</h2>
         <h3>Instructor: {{ $instructor->name }} {{$instructor->last_name}} {{$instructor->second_last_name}}</h3>
-        <a target="download" href="{{ route('reportsGeneralDownload', $instructor->id) }}" class="btn btn-primary">
-            Descargar Reporte General
-        </a>
+        <a target="_blank" href="{{ route('reportsGeneralDownload', $instructor->id) }}" class="btn btn-primary btn-custom">
+    Descargar Reporte General
+</a>
+
+        
 
 
         <div class="container-grafic">
