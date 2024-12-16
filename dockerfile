@@ -10,13 +10,5 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd 
 
-# Copia el código de tu aplicación
-COPY . /app
 
-# Define el directorio de trabajo
-WORKDIR /app
 
-# Instala dependencias de PHP y Node (si es necesario)
-
-# Comando para iniciar el servidor PHP-FPM
-CMD ["php-fpm"]
