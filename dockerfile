@@ -16,7 +16,7 @@ COPY . /app
 WORKDIR /app
 
 # Instala dependencias de PHP y Node (si es necesario)
-RUN composer install --no-dev --optimize-autoloader
+
 RUN npm install --location=global
 RUN npm install puppeteer --location=global
 RUN composer require spatie/browsershot
