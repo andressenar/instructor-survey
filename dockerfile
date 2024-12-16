@@ -18,10 +18,5 @@ WORKDIR /app
 
 # Instala dependencias de PHP y Node (si es necesario)
 
-
-
-# Expone el puerto si es necesario (opcional, ya que Railway maneja esto automáticamente)
-EXPOSE 8080
-
 # Comando para iniciar el servidor PHP-FPM
 CMD ["php-fpm"]
