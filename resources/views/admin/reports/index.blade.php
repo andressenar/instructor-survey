@@ -136,62 +136,67 @@
             </thead>
             <tbody>
                 @foreach ($instructors as $instructor)
-                <tr class="border-b">
-                    <td class="px-4 py-2">{{ $instructor->name }} {{ $instructor->last_name}} {{$instructor->second_last_name}}</td>
-                    <td class="px-4 py-2 text-center">
-                        <button onclick="openModal({{ $instructor->id }})"
-                            class="px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-[#38a980] focus:outline-none">
-                            Ver Fichas Asociadas
-                        </button>
-                    </td>
+                    <tr class="border-b">
+                        <td class="px-4 py-2">{{ $instructor->name }} {{ $instructor->last_name }}
+                            {{ $instructor->second_last_name }}</td>
+                        <td class="px-4 py-2 text-center">
+                            <button onclick="openModal({{ $instructor->id }})"
+                                class="px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-[#38a980] focus:outline-none">
+                                Ver Fichas Asociadas
+                            </button>
+                        </td>
 
-                    <td class="px-4 py-2 text-center">
-                        <button 
-                            @if (!$instructor->hasGeneralAnswers) disabled @endif
-                            onclick="window.location.href='{{ $instructor->hasGeneralAnswers ? route('reportsGeneral', $instructor->id) : '#' }}'"
-                            class="px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-[#38a980] focus:outline-none
-                                @if (!$instructor->hasGeneralAnswers) bg-gray-400 text-white cursor-not-allowed @endif">
-                            Reporte General
-                        </button>
-                    </td>
+                        <td class="px-4 py-2 text-center">
+                            <button @if (!$instructor->hasGeneralAnswers) disabled @endif>
+                                <a href="{{ $instructor->hasGeneralAnswers ? route('reportsGeneral', $instructor->id) : '#' }}"
+                                    class="px-4 py-2 rounded-lg focus:outline-none
+                            @if ($instructor->hasGeneralAnswers) bg-[#38a901] text-white hover:bg-[#38a980]
+                            @else bg-gray-400 text-white cursor-not-allowed @endif">
+                                    Reporte General
+                                </a>
+                            </button>
+                        </td>
 
-                </tr>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
 
         <!-- Modales para Fichas -->
         @foreach ($instructors as $instructor)
-        <div id="modal-{{ $instructor->id }}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Fichas Asociadas a {{ $instructor->name }} {{ $instructor->last_name}} {{$instructor->second_last_name}}</h2>
+            <div id="modal-{{ $instructor->id }}"
+                class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Fichas Asociadas a {{ $instructor->name }}
+                        {{ $instructor->last_name }} {{ $instructor->second_last_name }}</h2>
 
-                <div class="space-y-2">
-                    @foreach ($instructor->courses as $course)
-                        @if ($course->hasAnswers)
-                            <button>
-                                <a href="{{ route('reports.show', ['courseId' => $course->id, 'instructorId' => $instructor->id, 'programId' => $course->program->id]) }}"
-                                    class="block px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-green-700 focus:outline-none">
-                                    {{ $course->code }}
-                                </a>
-                            </button>
-                        @else
-                            <button disabled>
-                                <a class="block px-4 py-2 bg-gray-400 text-white rounded-lg focus:outline-none cursor-not-allowed">
-                                    {{ $course->code }}
-                                </a>
-                            </button>
-                        @endif
-                    @endforeach
+                    <div class="space-y-2">
+                        @foreach ($instructor->courses as $course)
+                            @if ($course->hasAnswers)
+                                <button>
+                                    <a href="{{ route('reports.show', ['courseId' => $course->id, 'instructorId' => $instructor->id, 'programId' => $course->program->id]) }}"
+                                        class="block px-4 py-2 bg-[#38a901] text-white rounded-lg hover:bg-green-700 focus:outline-none">
+                                        {{ $course->code }}
+                                    </a>
+                                </button>
+                            @else
+                                <button disabled>
+                                    <a
+                                        class="block px-4 py-2 bg-gray-400 text-white rounded-lg focus:outline-none cursor-not-allowed">
+                                        {{ $course->code }}
+                                    </a>
+                                </button>
+                            @endif
+                        @endforeach
+                    </div>
+
+
+                    <button onclick="closeModal({{ $instructor->id }})"
+                        class="mt-4 w-full py-2 px-4 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                        Cerrar
+                    </button>
                 </div>
-                
-
-                <button onclick="closeModal({{ $instructor->id }})"
-                    class="mt-4 w-full py-2 px-4 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                    Cerrar
-                </button>
             </div>
-        </div>
         @endforeach
     </div>
     <script>
@@ -204,25 +209,44 @@
         }
 
         $(document).ready(function() {
-            $('#reportTable').DataTable({
+            const table = $('#reportTable').DataTable({
                 language: {
-                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                    url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
                 },
                 paging: true,
                 searching: true,
                 ordering: true,
                 info: true,
                 searchDelay: 200,
+                responsive: true,
+                autoWidth: false,
+                
                 initComplete: function(settings, json) {
                     const table = this.api();
+
+                    // Extender la lógica de búsqueda para permitir "ñ" y "Ñ"
                     $.fn.DataTable.ext.type.search.string = function(data) {
-                        return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                            .toLowerCase();
+                        return !data ? '' : data
+                            .normalize("NFD") // Descompone los caracteres latinos con diacríticos
+                            .replace(/[̀-ͯ]/g, "") // Elimina los diacríticos
+                            .toLowerCase(); // Convierte todo a minúsculas
                     };
+
+                    // Validar y bloquear caracteres especiales y tildes en la búsqueda, pero permitir "ñ" y "Ñ"
+                    $('#reportTable_filter input').on('input', function() {
+                        const invalidCharsPattern = /[^a-zA-ZñÑ\s]/g; // Bloquear caracteres especiales excepto letras, números, espacios y ñ/Ñ
+                        const inputValue = $(this).val();
+                        if (invalidCharsPattern.test(inputValue)) {
+                            alert('Para garantizar la precisión de los resultados, no se permite el uso de caracteres especiales en la búsqueda. Esto incluye símbolos como @, #, $, %, &, *, entre otros. Únicamente se aceptan letras, la letra "ñ" y espacios. Por favor, asegúrese de seguir estas directrices al realizar su búsqueda.');
+                            $(this).val(inputValue.replace(invalidCharsPattern, ''));
+                        }
+                    });
+
                     table.draw();
                 }
             });
         });
+
 
         // Abre y cierra el modal de carga masiva
         document.getElementById('open-modal').addEventListener('click', function() {
